@@ -127,10 +127,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Auth UI Update Function
     function updateAuthUI() {
+        console.log('updateAuthUI called. User:', user);
         if (user) {
+            console.log('Showing user profile, hiding login button');
             loginBtn.classList.add('hidden');
             userProfile.classList.remove('hidden');
+
+            // Show user email
+            const emailDisplay = document.createElement('div');
+            emailDisplay.className = 'user-email';
+            emailDisplay.textContent = user.email;
+            emailDisplay.style.color = '#8A8FA3';
+            emailDisplay.style.fontSize = '12px';
+            emailDisplay.style.marginBottom = '10px';
+            emailDisplay.style.textAlign = 'center';
+
+            // Remove existing email display if any
+            const existing = userProfile.querySelector('.user-email');
+            if (existing) existing.remove();
+
+            userProfile.insertBefore(emailDisplay, userProfile.firstChild);
         } else {
+            console.log('Showing login button, hiding user profile');
             loginBtn.classList.remove('hidden');
             userProfile.classList.add('hidden');
         }
@@ -144,12 +162,34 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Firebase is not configured. Please add your config in app.js');
                 return;
             }
+
+            if (!auth) {
+                alert('Auth module not initialized. Check console for errors.');
+                return;
+            }
+
             const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).catch(error => {
-                console.error('Login error:', error);
-                alert('Login failed: ' + error.message);
-            });
+
+            auth.signInWithRedirect(provider);
         });
+    }
+
+    // Handle Redirect Result (Check on load)
+    if (isFirebaseInitialized && auth) {
+        auth.getRedirectResult()
+            .then((result) => {
+                if (result.credential) {
+                    console.log('Redirect login successful!');
+                    console.log('Redirect result:', result);
+                }
+            }).catch((error) => {
+                console.error('Redirect error:', error);
+                if (error.code === 'auth/unauthorized-domain') {
+                    alert(`DOMAIN ERROR: ${window.location.hostname} is not authorized.`);
+                } else {
+                    alert('Login failed: ' + error.message);
+                }
+            });
     }
 
     if (logoutBtn) {
@@ -162,10 +202,60 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Cloud Sync Functions
+    async function saveAssetsToCloud() {
+        if (!user || !db) return;
+        try {
+            await db.collection('users').doc(user.uid).set({
+                assets: assets,
+                currency: currency,
+                lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+            console.log('Saved assets to cloud');
+        } catch (error) {
+            console.error('Error saving to cloud:', error);
+        }
+    }
+
+    async function loadAssetsFromCloud() {
+        if (!user || !db) return;
+        try {
+            const doc = await db.collection('users').doc(user.uid).get();
+            if (doc.exists) {
+                const data = doc.data();
+                if (data.assets) {
+                    assets = data.assets;
+                    console.log('Loaded assets from cloud:', assets.length);
+                    localStorage.setItem('assets', JSON.stringify(assets));
+                }
+                if (data.currency) {
+                    currency = data.currency;
+                    localStorage.setItem('currency', currency);
+                    const radio = document.querySelector(`input[name="currency"][value="${currency}"]`);
+                    if (radio) radio.checked = true;
+                }
+            } else {
+                console.log('No cloud data found, syncing local to cloud');
+                saveAssetsToCloud();
+            }
+        } catch (error) {
+            console.error('Error loading from cloud:', error);
+        }
+    }
+
+    function loadAssetsFromLocal() {
+        const localAssets = localStorage.getItem('assets');
+        if (localAssets) {
+            assets = JSON.parse(localAssets);
+            console.log('Loaded assets from local storage');
+        }
+    }
+
     // Initialization
     async function init() {
         if (isFirebaseInitialized) {
             auth.onAuthStateChanged(async (currentUser) => {
+                console.log('Auth state changed. Current user:', currentUser);
                 user = currentUser;
                 updateAuthUI();
                 if (user) {
@@ -991,8 +1081,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             assets.push(assetData);
             console.log('[ADD ASSET] Assets array now has', assets.length, 'items');
-            localStorage.setItem('assets', JSON.stringify(assets));
-            console.log('[ADD ASSET] Saved to localStorage');
+
+            // Save to both local and cloud
+            saveAssets();
+            console.log('[ADD ASSET] Saved assets');
 
             updateTotalBalance();
             console.log('[ADD ASSET] Updated total balance');
