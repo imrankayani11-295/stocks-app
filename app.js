@@ -134,19 +134,42 @@ document.addEventListener('DOMContentLoaded', () => {
             userProfile.classList.remove('hidden');
 
             // Show user email
-            const emailDisplay = document.createElement('div');
-            emailDisplay.className = 'user-email';
-            emailDisplay.textContent = user.email;
-            emailDisplay.style.color = '#8A8FA3';
-            emailDisplay.style.fontSize = '12px';
-            emailDisplay.style.marginBottom = '10px';
-            emailDisplay.style.textAlign = 'center';
+            let emailDisplay = document.getElementById('user-email-display');
+            if (!emailDisplay) {
+                emailDisplay = document.createElement('div');
+                emailDisplay.id = 'user-email-display';
+                emailDisplay.style.textAlign = 'center';
+                emailDisplay.style.marginBottom = '10px';
+                emailDisplay.style.color = '#8A8FA3';
+                emailDisplay.style.fontSize = '14px';
+                userProfile.insertBefore(emailDisplay, userProfile.firstChild);
+            }
+            emailDisplay.textContent = `Signed in as: ${user.email}`;
 
-            // Remove existing email display if any
-            const existing = userProfile.querySelector('.user-email');
-            if (existing) existing.remove();
-
-            userProfile.insertBefore(emailDisplay, userProfile.firstChild);
+            // Add Test Cloud Button (Temporary)
+            let testBtn = document.getElementById('test-cloud-btn');
+            if (!testBtn) {
+                testBtn = document.createElement('button');
+                testBtn.id = 'test-cloud-btn';
+                testBtn.textContent = 'Test Cloud Connection';
+                testBtn.className = 'auth-btn';
+                testBtn.style.marginTop = '10px';
+                testBtn.style.backgroundColor = '#2F3336';
+                testBtn.onclick = async () => {
+                    testBtn.textContent = 'Testing...';
+                    try {
+                        await db.collection('users').doc(user.uid).update({
+                            lastTest: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                        alert('Cloud Connection SUCCESS! Data saved to Firestore.');
+                        testBtn.textContent = 'Test Cloud Connection';
+                    } catch (err) {
+                        alert('Cloud Connection FAILED: ' + err.message);
+                        testBtn.textContent = 'Test Failed';
+                    }
+                };
+                userProfile.appendChild(testBtn);
+            }
         } else {
             console.log('Showing login button, hiding user profile');
             loginBtn.classList.remove('hidden');
@@ -196,7 +219,9 @@ document.addEventListener('DOMContentLoaded', () => {
         logoutBtn.addEventListener('click', () => {
             auth.signOut().then(() => {
                 console.log('Logged out');
-                // Optional: Clear data or reload
+                // Clear local data to prevent leaks
+                localStorage.removeItem('assets');
+                localStorage.removeItem('currency');
                 window.location.reload();
             });
         });
@@ -214,6 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Saved assets to cloud');
         } catch (error) {
             console.error('Error saving to cloud:', error);
+            alert('Cloud Save Error: ' + error.message);
         }
     }
 
