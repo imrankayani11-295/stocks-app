@@ -708,7 +708,9 @@ select {
         width: 95%;
         padding: 24px;
     }
-}/* Authentication UI */
+}
+
+/* Authentication UI */
 .header-left {
     display: flex;
     align-items: center;
@@ -763,7 +765,9 @@ header {
 
 header h1 {
     margin-right: 16px;
-}/* Settings Auth UI */
+}
+
+/* Settings Auth UI */
 .auth-btn.full-width {
     width: 100%;
     justify-content: center;
@@ -810,4 +814,9 @@ header h1 {
     width: 40px;
     height: 40px;
     border-radius: 50%;
+}
+
+/* Utility Classes */
+.hidden {
+    display: none !important;
 }
