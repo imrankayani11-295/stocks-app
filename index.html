@@ -18,6 +18,11 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <!-- Chart.js for analytics charts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
 
 <body>
@@ -25,7 +30,10 @@
         <!-- Home Tab Content -->
         <div id="home-view" class="tab-view active">
             <header class="header">
-                <h1>Portfolio</h1>
+                <div class="header-left">
+                    <h1>Portfolio</h1>
+
+                </div>
                 <div class="header-actions">
                     <button id="settings-btn" class="icon-btn"><i class="ph ph-gear"></i></button>
                     <button id="add-btn" class="icon-btn"><i class="ph ph-plus"></i></button>
@@ -111,6 +119,22 @@
             </header>
 
             <main>
+                <section class="settings-section">
+                    <h3>Account</h3>
+                    <div id="auth-container">
+                        <button id="login-btn" class="auth-btn full-width">
+                            <i class="ph ph-google-logo"></i>
+                            <span>Sign in with Google</span>
+                        </button>
+                        <div id="user-profile" class="hidden">
+                            <button id="logout-btn" class="auth-btn logout">
+                                <i class="ph ph-sign-out"></i>
+                                <span>Sign Out</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
                 <section class="settings-section">
                     <h3>Currency</h3>
                     <div class="segmented-control">

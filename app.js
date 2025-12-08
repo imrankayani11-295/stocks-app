@@ -69,6 +69,38 @@ const MOCK_STOCK_PRICES = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+    // ==========================================
+    // FIREBASE CONFIGURATION
+    // ==========================================
+    const firebaseConfig = {
+        apiKey: "AIzaSyBgOLZ1qR66TWrd8IOw9mlpDcb-FVkNDVs",
+        authDomain: "assetly-ad663.firebaseapp.com",
+        projectId: "assetly-ad663",
+        storageBucket: "assetly-ad663.firebasestorage.app",
+        messagingSenderId: "685693781118",
+        appId: "1:685693781118:web:a3d67adcd21f553d06442f",
+        measurementId: "G-2L29DDEP2W"
+    };
+    // ==========================================
+
+    // Initialize Firebase
+    let auth, db, user = null;
+    let isFirebaseInitialized = false;
+
+    try {
+        if (firebaseConfig.apiKey) {
+            firebase.initializeApp(firebaseConfig);
+            auth = firebase.auth();
+            db = firebase.firestore();
+            isFirebaseInitialized = true;
+            console.log('Firebase initialized');
+        } else {
+            console.warn('Firebase config missing. Running in offline mode.');
+        }
+    } catch (error) {
+        console.error('Firebase initialization error:', error);
+    }
+
     // DOM Elements
     const assetsContainer = document.getElementById('assets-container');
     const totalBalanceEl = document.getElementById('total-balance');
@@ -87,8 +119,71 @@ document.addEventListener('DOMContentLoaded', () => {
     const navBtns = document.querySelectorAll('.nav-btn');
     const views = document.querySelectorAll('.tab-view');
 
+    // Auth Elements
+    const loginBtn = document.getElementById('login-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+    const userProfile = document.getElementById('user-profile');
+    const authContainer = document.getElementById('auth-container');
+
+    // Auth UI Update Function
+    function updateAuthUI() {
+        if (user) {
+            loginBtn.classList.add('hidden');
+            userProfile.classList.remove('hidden');
+        } else {
+            loginBtn.classList.remove('hidden');
+            userProfile.classList.add('hidden');
+        }
+    }
+
+    // Auth Handlers
+    if (loginBtn) {
+        loginBtn.addEventListener('click', () => {
+            console.log('Login button clicked');
+            if (!isFirebaseInitialized) {
+                alert('Firebase is not configured. Please add your config in app.js');
+                return;
+            }
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider).catch(error => {
+                console.error('Login error:', error);
+                alert('Login failed: ' + error.message);
+            });
+        });
+    }
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            auth.signOut().then(() => {
+                console.log('Logged out');
+                // Optional: Clear data or reload
+                window.location.reload();
+            });
+        });
+    }
+
     // Initialization
     async function init() {
+        if (isFirebaseInitialized) {
+            auth.onAuthStateChanged(async (currentUser) => {
+                user = currentUser;
+                updateAuthUI();
+                if (user) {
+                    await loadAssetsFromCloud();
+                } else {
+                    loadAssetsFromLocal();
+                }
+                renderAssets();
+                updateTotalBalance();
+                if (currentView === 'growth') renderGrowthTab();
+            });
+        } else {
+            loadAssetsFromLocal();
+            renderAssets();
+            updateTotalBalance();
+            if (currentView === 'growth') renderGrowthTab();
+        }
+
         // Set initial currency radio
         document.querySelector(`input[name="currency"][value="${currency}"]`).checked = true;
 
@@ -933,6 +1028,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function saveAssets() {
         localStorage.setItem('assets', JSON.stringify(assets));
+        if (user && isFirebaseInitialized) {
+            saveAssetsToCloud();
+        }
     }
 
     function animateValue(obj, start, end, duration) {
