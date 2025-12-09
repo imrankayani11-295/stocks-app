@@ -194,19 +194,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const provider = new firebase.auth.GoogleAuthProvider();
             console.log('Starting sign in with POPUP...');
 
-            auth.signInWithPopup(provider)
-                .then((result) => {
-                    console.log('Sign in successful. User:', result.user);
-                    // Force UI update
-                    updateAuthUI();
-                })
+            auth.signInWithRedirect(provider)
                 .catch(error => {
                     console.error('Login error:', error);
-                    if (error.code === 'auth/popup-blocked') {
-                        alert('Login Popup Blocked. Please allow popups for this site.');
-                    } else if (error.code === 'auth/popup-closed-by-user') {
-                        console.log('Popup closed by user');
-                    } else if (error.code === 'auth/unauthorized-domain') {
+                    if (error.code === 'auth/unauthorized-domain') {
                         alert(`DOMAIN ERROR: ${window.location.hostname} is not authorized in Firebase Console.`);
                     } else {
                         alert('Login failed: ' + error.message);
