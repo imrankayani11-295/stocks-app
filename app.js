@@ -367,10 +367,21 @@ document.addEventListener('DOMContentLoaded', () => {
                             const city = addr.city || addr.town || addr.village || addr.hamlet || addr.suburb || '';
                             const postcode = addr.postcode || '';
 
-                            // Construct specific format: "12 Andermans, Windsor, SL4 5RN"
+                            // Check if user typed a number
+                            const queryNumMatch = query.match(/^(\d+)\s/);
+                            const queryNum = queryNumMatch ? queryNumMatch[1] : null;
+
+                            // Construct specific format: "10 Andermans, Windsor, SL4 5RN"
                             let mainParts = [];
-                            if (number) mainParts.push(number + ' ' + street);
-                            else if (street) mainParts.push(street);
+
+                            if (number) {
+                                mainParts.push(number + ' ' + street);
+                            } else if (queryNum && street) {
+                                // User typed a number but API returned street only -> use user's number
+                                mainParts.push(queryNum + ' ' + street);
+                            } else if (street) {
+                                mainParts.push(street);
+                            }
 
                             if (city) mainParts.push(city);
                             if (postcode) mainParts.push(postcode);
@@ -387,7 +398,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             `;
 
                             li.addEventListener('click', () => {
-                                addressInput.value = item.display_name;
+                                // Use our formatted text which includes the number
+                                addressInput.value = mainText;
                                 suggestionsList.classList.add('hidden');
                                 // Trigger valuation
                                 addressInput.dispatchEvent(new Event('blur'));
