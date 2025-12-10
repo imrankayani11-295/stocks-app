@@ -313,69 +313,95 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector(`input[name="currency"][value="${currency}"]`).checked = true;
 
         // Initialize free UK postcode autocomplete
+        // Initialize custom address autocomplete
         const addressInput = document.getElementById('asset-address');
-        const addressSuggestions = document.createElement('datalist');
-        addressSuggestions.id = 'address-suggestions';
-        addressInput.setAttribute('list', 'address-suggestions');
-        addressInput.parentNode.appendChild(addressSuggestions);
+        let suggestionsList = document.getElementById('address-suggestions-list');
 
-        // Postcode autocomplete handler
+        if (!suggestionsList) {
+            suggestionsList = document.createElement('ul');
+            suggestionsList.id = 'address-suggestions-list';
+            suggestionsList.className = 'suggestions-list hidden';
+            addressInput.parentNode.style.position = 'relative'; // Ensure parent is relative
+            addressInput.parentNode.appendChild(suggestionsList);
+        }
+
+        // Close suggestions on click outside
+        document.addEventListener('click', (e) => {
+            if (!addressInput.contains(e.target) && !suggestionsList.contains(e.target)) {
+                suggestionsList.classList.add('hidden');
+            }
+        });
+
+        // Address autocomplete handler (Nominatim)
         let debounceTimer;
         addressInput.addEventListener('input', async (e) => {
             clearTimeout(debounceTimer);
-            const value = e.target.value.trim().toUpperCase();
+            const query = e.target.value.trim();
 
-            // Extract partial postcode - more permissive regex
-            const postcodeMatch = value.match(/([A-Z]{1,2}\d{1,2}[A-Z]?)\s*(\d[A-Z]{0,2})?/i);
-
-            if (postcodeMatch && postcodeMatch[0].replace(/\s/g, '').length >= 2) {
-                debounceTimer = setTimeout(async () => {
-                    try {
-                        const partialPostcode = postcodeMatch[0].replace(/\s/g, '').toUpperCase();
-                        console.log('Looking up postcode:', partialPostcode);
-                        const response = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(partialPostcode)}/autocomplete`);
-                        const data = await response.json();
-
-                        console.log('Autocomplete response:', data);
-
-                        if (data.status === 200 && data.result && data.result.length > 0) {
-                            addressSuggestions.innerHTML = '';
-
-                            // Fetch details for each postcode to show area info
-                            const detailPromises = data.result.slice(0, 8).map(async (postcode) => {
-                                try {
-                                    const detailResp = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(postcode)}`);
-                                    const detailData = await detailResp.json();
-                                    if (detailData.status === 200 && detailData.result) {
-                                        const result = detailData.result;
-                                        // Create display with postcode and area
-                                        const displayText = `${postcode} - ${result.admin_district || result.parish || result.ward || ''}`;
-                                        return { postcode, displayText };
-                                    }
-                                } catch (err) {
-                                    console.log('Detail fetch error for', postcode);
-                                }
-                                return { postcode, displayText: postcode };
-                            });
-
-                            const details = await Promise.all(detailPromises);
-
-                            details.forEach(({ postcode, displayText }) => {
-                                const option = document.createElement('option');
-                                option.value = postcode;
-                                option.label = displayText;
-                                addressSuggestions.appendChild(option);
-                            });
-
-                            console.log('Added', details.length, 'suggestions with area info');
-                        } else {
-                            console.log('No autocomplete results');
-                        }
-                    } catch (err) {
-                        console.error('Postcode lookup error:', err);
-                    }
-                }, 300);
+            if (query.length < 3) {
+                suggestionsList.classList.add('hidden');
+                return;
             }
+
+            debounceTimer = setTimeout(async () => {
+                try {
+                    console.log('Looking up address:', query);
+                    // Use Nominatim API for address search
+                    const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=5&countrycodes=gb`);
+                    const data = await response.json();
+
+                    console.log('Nominatim response:', data);
+
+                    if (data && data.length > 0) {
+                        suggestionsList.innerHTML = '';
+                        suggestionsList.classList.remove('hidden');
+
+                        data.forEach(item => {
+                            const li = document.createElement('li');
+                            li.className = 'suggestion-item';
+
+                            // Format address
+                            const addr = item.address;
+                            const street = addr.road || '';
+                            const number = addr.house_number || '';
+                            const city = addr.city || addr.town || addr.village || addr.hamlet || addr.suburb || '';
+                            const postcode = addr.postcode || '';
+
+                            // Construct specific format: "12 Andermans, Windsor, SL4 5RN"
+                            let mainParts = [];
+                            if (number) mainParts.push(number + ' ' + street);
+                            else if (street) mainParts.push(street);
+
+                            if (city) mainParts.push(city);
+                            if (postcode) mainParts.push(postcode);
+
+                            const mainText = mainParts.length > 0 ? mainParts.join(', ') : item.display_name.split(',').slice(0, 3).join(',');
+                            const subText = item.display_name; // Keep full address as subtext for context
+
+                            li.innerHTML = `
+                                <i class="ph ph-map-pin suggestion-icon"></i>
+                                <div class="suggestion-text">
+                                    <span class="suggestion-main">${mainText}</span>
+                                    <span class="suggestion-sub">${subText}</span>
+                                </div>
+                            `;
+
+                            li.addEventListener('click', () => {
+                                addressInput.value = item.display_name;
+                                suggestionsList.classList.add('hidden');
+                                // Trigger valuation
+                                addressInput.dispatchEvent(new Event('blur'));
+                            });
+
+                            suggestionsList.appendChild(li);
+                        });
+                    } else {
+                        suggestionsList.classList.add('hidden');
+                    }
+                } catch (err) {
+                    console.error('Address lookup error:', err);
+                }
+            }, 300);
         });
 
         // Auto-fetch property valuation when address is entered
