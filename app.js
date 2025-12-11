@@ -1522,7 +1522,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(`Querying Land Registry for ${postcode}, House: ${houseNumber}`);
 
             // 2. Query Land Registry API
-            const apiUrl = `http://landregistry.data.gov.uk/data/ppi/transaction-record.json?propertyAddress.postcode=${encodeURIComponent(postcode)}`;
+            // MUST use HTTPS to avoid Mixed Content errors on Vercel
+            const apiUrl = `https://landregistry.data.gov.uk/data/ppi/transaction-record.json?propertyAddress.postcode=${encodeURIComponent(postcode)}`;
             const response = await fetch(apiUrl);
 
             if (!response.ok) throw new Error('Land Registry API failed');
