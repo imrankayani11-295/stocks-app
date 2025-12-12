@@ -1500,8 +1500,91 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
+    // Toast Notification System
+    function showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.textContent = message;
+
+        // Style the toast
+        Object.assign(toast.style, {
+            position: 'fixed',
+            bottom: '20px',
+            right: '20px',
+            padding: '12px 24px',
+            borderRadius: '8px',
+            background: type === 'error' ? '#EF4444' : '#10B981',
+            color: 'white',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+            zIndex: '9999',
+            transition: 'opacity 0.3s ease',
+            opacity: '0'
+        });
+
+        document.body.appendChild(toast);
+
+        // Animate in
+        requestAnimationFrame(() => toast.style.opacity = '1');
+
+        // Remove after 3 seconds
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    // Cloud Sync Functions
+    async function saveAssetsToCloud() {
+        if (!user || !db) return;
+        try {
+            console.log('Saving to cloud...', assets.length, 'assets');
+            await db.collection('users').doc(user.uid).set({
+                assets: assets,
+                currency: currency,
+                lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+            console.log('Saved assets to cloud');
+            showToast('Saved to cloud', 'success');
+        } catch (error) {
+            console.error('Error saving to cloud:', error);
+            showToast('Cloud Save Error: ' + error.message, 'error');
+        }
+    }
+
+    async function loadAssetsFromCloud() {
+        if (!user || !db) return;
+        try {
+            console.log('Loading from cloud...');
+            const doc = await db.collection('users').doc(user.uid).get();
+            if (doc.exists) {
+                const data = doc.data();
+                if (data.assets && Array.isArray(data.assets)) {
+                    assets = data.assets;
+                    console.log('Loaded assets from cloud:', assets.length);
+                    localStorage.setItem('assets', JSON.stringify(assets));
+                    showToast('Assets loaded from cloud', 'success');
+                }
+                if (data.currency) {
+                    currency = data.currency;
+                    localStorage.setItem('currency', currency);
+                    const radio = document.querySelector(`input[name="currency"][value="${currency}"]`);
+                    if (radio) radio.checked = true;
+                }
+            } else {
+                console.log('No cloud data found, syncing local to cloud');
+                saveAssetsToCloud();
+            }
+        } catch (error) {
+            console.error('Error loading from cloud:', error);
+            showToast('Error loading data: ' + error.message, 'error');
+        }
+    }
+
+    // ... (rest of the file)
+
     // Property Valuation Service (HM Land Registry)
     async function fetchPropertyValuation(address) {
+        // ... (existing implementation)
         console.log('Fetching valuation for:', address);
 
         try {
