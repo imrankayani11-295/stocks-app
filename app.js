@@ -92,8 +92,22 @@ document.addEventListener('DOMContentLoaded', () => {
             firebase.initializeApp(firebaseConfig);
             auth = firebase.auth();
             db = firebase.firestore();
+
+            // Enable Offline Persistence
+            db.enablePersistence()
+                .catch((err) => {
+                    if (err.code == 'failed-precondition') {
+                        console.warn('Persistence failed: Multiple tabs open');
+                    } else if (err.code == 'unimplemented') {
+                        console.warn('Persistence not supported by browser');
+                    }
+                });
+
+            // Use Long Polling to avoid "Client is offline" errors in some environments
+            db.settings({ experimentalForceLongPolling: true });
+
             isFirebaseInitialized = true;
-            console.log('Firebase initialized');
+            console.log('Firebase initialized with persistence');
         } else {
             console.warn('Firebase config missing. Running in offline mode.');
         }
