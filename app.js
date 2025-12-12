@@ -194,10 +194,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const provider = new firebase.auth.GoogleAuthProvider();
             console.log('Starting sign in with POPUP...');
 
-            auth.signInWithRedirect(provider)
+            auth.signInWithPopup(provider)
+                .then((result) => {
+                    console.log('Sign in successful. User:', result.user);
+                    // Force UI update
+                    updateAuthUI();
+                })
                 .catch(error => {
                     console.error('Login error:', error);
-                    if (error.code === 'auth/unauthorized-domain') {
+                    if (error.code === 'auth/popup-blocked') {
+                        alert('Login Popup Blocked. Please allow popups for this site.');
+                    } else if (error.code === 'auth/popup-closed-by-user') {
+                        console.log('Popup closed by user');
+                    } else if (error.code === 'auth/unauthorized-domain') {
                         alert(`DOMAIN ERROR: ${window.location.hostname} is not authorized in Firebase Console.`);
                     } else {
                         alert('Login failed: ' + error.message);
@@ -206,23 +215,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Handle Redirect Result (Check on load)
-    if (isFirebaseInitialized && auth) {
-        auth.getRedirectResult()
-            .then((result) => {
-                if (result.credential) {
-                    console.log('Redirect login successful!');
-                    console.log('Redirect result:', result);
-                }
-            }).catch((error) => {
-                console.error('Redirect error:', error);
-                if (error.code === 'auth/unauthorized-domain') {
-                    alert(`DOMAIN ERROR: ${window.location.hostname} is not authorized.`);
-                } else {
-                    alert('Login failed: ' + error.message);
-                }
-            });
-    }
+    // Handle Redirect Result (Removed as we are using Popup)
+    // if (isFirebaseInitialized && auth) { ... }
 
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
