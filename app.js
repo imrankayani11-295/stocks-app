@@ -1180,7 +1180,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function deleteAsset(index) {
         assets.splice(index, 1);
-        localStorage.setItem('assets', JSON.stringify(assets));
+        saveAssets();
         updateTotalBalance();
         renderAssets();
     }
@@ -1486,7 +1486,7 @@ document.addEventListener('DOMContentLoaded', () => {
         assets[editingAssetIndex].amount = newAmount;
 
         // Save and refresh
-        localStorage.setItem('assets', JSON.stringify(assets));
+        saveAssets();
 
         // Close modal
         document.getElementById('edit-modal').classList.add('hidden');
