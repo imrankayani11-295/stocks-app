@@ -93,6 +93,9 @@ document.addEventListener('DOMContentLoaded', () => {
             auth = firebase.auth();
             db = firebase.firestore();
 
+            // Use Long Polling to avoid "Client is offline" errors in some environments
+            db.settings({ experimentalForceLongPolling: true });
+
             // Enable Offline Persistence
             db.enablePersistence()
                 .catch((err) => {
@@ -102,9 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         console.warn('Persistence not supported by browser');
                     }
                 });
-
-            // Use Long Polling to avoid "Client is offline" errors in some environments
-            db.settings({ experimentalForceLongPolling: true });
 
             isFirebaseInitialized = true;
             console.log('Firebase initialized with persistence');
