@@ -1,6 +1,6 @@
 {
-    "name": "Asset Tracker",
-    "short_name": "Assets",
+    "name": "Assetly",
+    "short_name": "Assetly",
     "start_url": "./index.html",
     "display": "standalone",
     "background_color": "#000000",
