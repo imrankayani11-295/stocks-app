@@ -252,10 +252,22 @@ document.addEventListener('DOMContentLoaded', () => {
             forceSyncBtn.innerHTML = '<i class="ph ph-spinner ph-spin"></i><span>Syncing...</span>';
 
             try {
-                await saveAssetsToCloud();
+                // Create a timeout promise
+                const timeout = new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error('Sync timed out (Network slow or offline)')), 5000)
+                );
+
+                // Race the save against the timeout
+                await Promise.race([saveAssetsToCloud(), timeout]);
+
                 // saveAssetsToCloud handles the success toast
             } catch (error) {
-                // saveAssetsToCloud handles the error toast
+                console.error('Force sync error:', error);
+                if (error.message.includes('timed out')) {
+                    showToast('Sync queued (You are offline)', 'warning');
+                } else {
+                    // saveAssetsToCloud handles other error toasts
+                }
             } finally {
                 setTimeout(() => {
                     forceSyncBtn.innerHTML = originalText;
