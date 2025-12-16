@@ -249,22 +249,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Visual feedback
             const originalText = forceSyncBtn.innerHTML;
-            forceSyncBtn.innerHTML = '<i class="ph ph-spinner ph-spin"></i><span>Syncing...</span>';
+            forceSyncBtn.innerHTML = '<i class="ph ph-spinner ph-spin"></i><span>Resetting...</span>';
 
             try {
-                // Create a timeout promise
+                // 1. Force Network Reset (Kickstart connection)
+                if (db) {
+                    console.log('Resetting Firestore network...');
+                    await db.disableNetwork();
+                    await db.enableNetwork();
+                    // Wait for connection to re-establish
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+
+                forceSyncBtn.innerHTML = '<i class="ph ph-spinner ph-spin"></i><span>Syncing...</span>';
+
+                // 2. Create a timeout promise (extended to 10s for mobile)
                 const timeout = new Promise((_, reject) =>
-                    setTimeout(() => reject(new Error('Sync timed out (Network slow or offline)')), 5000)
+                    setTimeout(() => reject(new Error('Sync timed out (Network slow or offline)')), 10000)
                 );
 
-                // Race the save against the timeout
+                // 3. Race the save against the timeout
                 await Promise.race([saveAssetsToCloud(), timeout]);
 
                 // saveAssetsToCloud handles the success toast
             } catch (error) {
                 console.error('Force sync error:', error);
                 if (error.message.includes('timed out')) {
-                    showToast('Sync queued (You are offline)', 'warning');
+                    showToast('Still offline. Try turning Airplane Mode on/off.', 'warning');
                 } else {
                     // saveAssetsToCloud handles other error toasts
                 }
