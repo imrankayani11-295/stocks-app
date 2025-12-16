@@ -1605,9 +1605,37 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error('Error loading from cloud:', error);
-            showToast('Error loading data: ' + error.message, 'error');
 
-            // Fallback to local storage if cloud fails (e.g. offline)
+            // Retry logic for offline errors
+            if (error.message.includes('offline')) {
+                console.log('Attempting to reset connection and retry...');
+                try {
+                    await db.disableNetwork();
+                    await db.enableNetwork();
+                    // Wait 1 second
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+
+                    const doc = await db.collection('users').doc(user.uid).get();
+                    if (doc.exists) {
+                        const data = doc.data();
+                        if (data.assets) {
+                            assets = data.assets;
+                            localStorage.setItem('assets', JSON.stringify(assets));
+                            updateTotalBalance();
+                            renderAssets();
+                            if (currentView === 'growth') renderGrowthTab();
+                            showToast('Assets loaded after retry', 'success');
+                            return;
+                        }
+                    }
+                } catch (retryError) {
+                    console.error('Retry failed:', retryError);
+                }
+            }
+
+            showToast('Connection Error: Check internet or AdBlock', 'error');
+
+            // Fallback to local storage
             console.log('Falling back to local storage...');
             loadAssetsFromLocal();
             renderAssets();
