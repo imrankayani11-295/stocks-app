@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 db = firebase.firestore();
 
                 // Use Long Polling to avoid "Client is offline" errors in some environments
-                // db.settings({ experimentalForceLongPolling: true });
+                db.settings({ experimentalForceLongPolling: true });
 
                 // Enable Offline Persistence
                 try {
@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // saveAssetsToCloud handles the success toast
             } catch (error) {
                 console.error('Force sync error:', error);
-                showToast('Offline: Cannot reach server. Check signal.', 'error');
+                showToast(`Offline: ${error.code || error.message}`, 'error');
             } finally {
                 setTimeout(() => {
                     forceSyncBtn.innerHTML = originalText;
