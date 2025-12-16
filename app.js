@@ -238,6 +238,31 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Force Cloud Sync Handler
+    const forceSyncBtn = document.getElementById('force-sync-btn');
+    if (forceSyncBtn) {
+        forceSyncBtn.addEventListener('click', async () => {
+            if (!user) {
+                showToast('You must be signed in to sync', 'error');
+                return;
+            }
+
+            // Visual feedback
+            const originalText = forceSyncBtn.innerHTML;
+            forceSyncBtn.innerHTML = '<i class="ph ph-spinner ph-spin"></i><span>Syncing...</span>';
+
+            try {
+                await saveAssetsToCloud();
+                // saveAssetsToCloud handles the success toast
+            } catch (error) {
+                // saveAssetsToCloud handles the error toast
+            } finally {
+                setTimeout(() => {
+                    forceSyncBtn.innerHTML = originalText;
+                }, 1000);
+            }
+        });
+    }
     // Handle Redirect Result (Removed as we are using Popup)
     // if (isFirebaseInitialized && auth) { ... }
 
