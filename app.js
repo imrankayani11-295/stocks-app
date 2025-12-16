@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 db = firebase.firestore();
 
                 // Use Long Polling to avoid "Client is offline" errors in some environments
-                // db.settings({ experimentalForceLongPolling: true });
+                db.settings({ experimentalForceLongPolling: true });
 
                 // Enable Offline Persistence
                 try {
@@ -255,6 +255,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => {
                     forceSyncBtn.innerHTML = originalText;
                 }, 1000);
+            }
+        });
+    }
+
+    // Export Data Handler
+    const exportBtn = document.getElementById('export-data-btn');
+    if (exportBtn) {
+        exportBtn.addEventListener('click', async () => {
+            try {
+                const dataStr = JSON.stringify(assets, null, 2);
+                await navigator.clipboard.writeText(dataStr);
+                showToast('Data copied to clipboard!', 'success');
+            } catch (err) {
+                console.error('Export failed:', err);
+                showToast('Failed to copy data', 'error');
             }
         });
     }
