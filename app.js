@@ -98,6 +98,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 db.settings({ experimentalForceLongPolling: true });
 
                 // Enable Offline Persistence
+                // DISABLED TEMPORARILY to fix sticky offline issues on mobile
+                /*
                 try {
                     await db.enablePersistence();
                     console.log('Persistence enabled');
@@ -108,6 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         console.warn('Persistence not supported by browser');
                     }
                 }
+                */
 
                 isFirebaseInitialized = true;
                 console.log('Firebase initialized with persistence');
@@ -252,6 +255,10 @@ document.addEventListener('DOMContentLoaded', () => {
             forceSyncBtn.innerHTML = '<i class="ph ph-spinner ph-spin"></i><span>Resetting...</span>';
 
             try {
+                // 0. Force Token Refresh
+                console.log('Refreshing auth token...');
+                await user.getIdToken(true);
+
                 // 1. Force Network Reset (Kickstart connection)
                 if (db) {
                     console.log('Resetting Firestore network...');
