@@ -87,33 +87,42 @@ document.addEventListener('DOMContentLoaded', () => {
     let auth, db, user = null;
     let isFirebaseInitialized = false;
 
-    try {
-        if (firebaseConfig.apiKey) {
-            firebase.initializeApp(firebaseConfig);
-            auth = firebase.auth();
-            db = firebase.firestore();
+    (async function initializeFirebase() {
+        try {
+            if (firebaseConfig.apiKey) {
+                firebase.initializeApp(firebaseConfig);
+                auth = firebase.auth();
+                db = firebase.firestore();
 
-            // Use Long Polling to avoid "Client is offline" errors in some environments
-            db.settings({ experimentalForceLongPolling: true });
+                // Use Long Polling to avoid "Client is offline" errors in some environments
+                db.settings({ experimentalForceLongPolling: true });
 
-            // Enable Offline Persistence
-            db.enablePersistence()
-                .catch((err) => {
+                // Enable Offline Persistence
+                try {
+                    await db.enablePersistence();
+                    console.log('Persistence enabled');
+                } catch (err) {
                     if (err.code == 'failed-precondition') {
                         console.warn('Persistence failed: Multiple tabs open');
                     } else if (err.code == 'unimplemented') {
                         console.warn('Persistence not supported by browser');
                     }
-                });
+                }
 
-            isFirebaseInitialized = true;
-            console.log('Firebase initialized with persistence');
-        } else {
-            console.warn('Firebase config missing. Running in offline mode.');
+                isFirebaseInitialized = true;
+                console.log('Firebase initialized with persistence');
+
+                // Initialize app logic after Firebase is ready
+                init();
+            } else {
+                console.warn('Firebase config missing. Running in offline mode.');
+                init();
+            }
+        } catch (error) {
+            console.error('Firebase initialization error:', error);
+            init(); // Try to init anyway (offline mode)
         }
-    } catch (error) {
-        console.error('Firebase initialization error:', error);
-    }
+    })();
 
     // DOM Elements
     const assetsContainer = document.getElementById('assets-container');
@@ -1576,6 +1585,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     assets = data.assets;
                     console.log('Loaded assets from cloud:', assets.length);
                     localStorage.setItem('assets', JSON.stringify(assets));
+
+                    // Update UI immediately
+                    updateTotalBalance();
+                    renderAssets();
+                    if (currentView === 'growth') renderGrowthTab();
+
                     showToast('Assets loaded from cloud', 'success');
                 }
                 if (data.currency) {
@@ -1591,6 +1606,13 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('Error loading from cloud:', error);
             showToast('Error loading data: ' + error.message, 'error');
+
+            // Fallback to local storage if cloud fails (e.g. offline)
+            console.log('Falling back to local storage...');
+            loadAssetsFromLocal();
+            renderAssets();
+            updateTotalBalance();
+            if (currentView === 'growth') renderGrowthTab();
         }
     }
 
@@ -1677,5 +1699,5 @@ document.addEventListener('DOMContentLoaded', () => {
             return Math.round(basePrice / 5000) * 5000;
         }
     }
-    init();
+
 });
