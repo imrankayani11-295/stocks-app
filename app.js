@@ -273,6 +273,34 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Import Data Handler
+    const importBtn = document.getElementById('import-data-btn');
+    if (importBtn) {
+        importBtn.addEventListener('click', async () => {
+            try {
+                const jsonStr = prompt("Paste your data here:");
+                if (!jsonStr) return;
+
+                const importedAssets = JSON.parse(jsonStr);
+                if (!Array.isArray(importedAssets)) {
+                    throw new Error("Invalid data format");
+                }
+
+                if (confirm(`Import ${importedAssets.length} assets? This will overwrite current data.`)) {
+                    assets = importedAssets;
+                    updateTotalBalance();
+                    renderAssets();
+                    renderGrowthTab();
+                    await saveAssets(); // Saves to Local AND Cloud
+                    showToast('Data imported successfully!', 'success');
+                }
+            } catch (err) {
+                console.error('Import failed:', err);
+                showToast('Invalid data format', 'error');
+            }
+        });
+    }
     // Handle Redirect Result (Removed as we are using Popup)
     // if (isFirebaseInitialized && auth) { ... }
 
