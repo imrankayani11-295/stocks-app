@@ -169,30 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             emailDisplay.textContent = `Signed in as: ${user.email}`;
 
-            // Add Test Cloud Button (Temporary)
-            let testBtn = document.getElementById('test-cloud-btn');
-            if (!testBtn) {
-                testBtn = document.createElement('button');
-                testBtn.id = 'test-cloud-btn';
-                testBtn.textContent = 'Test Cloud Connection';
-                testBtn.className = 'auth-btn';
-                testBtn.style.marginTop = '10px';
-                testBtn.style.backgroundColor = '#2F3336';
-                testBtn.onclick = async () => {
-                    testBtn.textContent = 'Testing...';
-                    try {
-                        await db.collection('users').doc(user.uid).update({
-                            lastTest: firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                        alert('Cloud Connection SUCCESS! Data saved to Firestore.');
-                        testBtn.textContent = 'Test Cloud Connection';
-                    } catch (err) {
-                        alert('Cloud Connection FAILED: ' + err.message);
-                        testBtn.textContent = 'Test Failed';
-                    }
-                };
-                userProfile.appendChild(testBtn);
-            }
+            // Test Cloud Button removed as requested
         } else {
             console.log('Showing login button, hiding user profile');
             loginBtn.classList.remove('hidden');
@@ -252,37 +229,27 @@ document.addEventListener('DOMContentLoaded', () => {
             forceSyncBtn.innerHTML = '<i class="ph ph-spinner ph-spin"></i><span>Resetting...</span>';
 
             try {
-                // 0. Force Token Refresh
-                console.log('Refreshing auth token...');
-                await user.getIdToken(true);
-
-                // 1. Force Network Reset (Kickstart connection)
-                if (db) {
-                    console.log('Resetting Firestore network...');
-                    await db.disableNetwork();
-                    await db.enableNetwork();
-                    // Wait for connection to re-establish
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                }
-
-                forceSyncBtn.innerHTML = '<i class="ph ph-spinner ph-spin"></i><span>Syncing...</span>';
-
-                // 2. Create a timeout promise (extended to 10s for mobile)
-                const timeout = new Promise((_, reject) =>
-                    setTimeout(() => reject(new Error('Sync timed out (Network slow or offline)')), 10000)
+                // 1. Check Server Connection FIRST
+                console.log('Checking server connection...');
+                const connectionTimeout = new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error('Connection check timed out')), 5000)
                 );
 
-                // 3. Race the save against the timeout
-                await Promise.race([saveAssetsToCloud(), timeout]);
+                // Try to read from server. If this fails, we are definitely offline.
+                await Promise.race([
+                    db.collection('users').doc(user.uid).get({ source: 'server' }),
+                    connectionTimeout
+                ]);
+
+                forceSyncBtn.innerHTML = '<i class="ph ph-spinner ph-spin"></i><span>Uploading...</span>';
+
+                // 2. If connection is good, save.
+                await saveAssetsToCloud();
 
                 // saveAssetsToCloud handles the success toast
             } catch (error) {
                 console.error('Force sync error:', error);
-                if (error.message.includes('timed out')) {
-                    showToast('Still offline. Try turning Airplane Mode on/off.', 'warning');
-                } else {
-                    // saveAssetsToCloud handles other error toasts
-                }
+                showToast('Offline: Cannot reach server. Check signal.', 'error');
             } finally {
                 setTimeout(() => {
                     forceSyncBtn.innerHTML = originalText;
