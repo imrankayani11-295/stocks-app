@@ -1591,7 +1591,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     renderAssets();
                     if (currentView === 'growth') renderGrowthTab();
 
-                    showToast('Assets loaded from cloud', 'success');
+                    showToast(`Loaded ${assets.length} assets for user ${user.email}`, 'success');
                 }
                 if (data.currency) {
                     currency = data.currency;
@@ -1600,8 +1600,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (radio) radio.checked = true;
                 }
             } else {
-                console.log('No cloud data found, syncing local to cloud');
-                saveAssetsToCloud();
+                console.log('No cloud data found');
+                // Only sync local to cloud if we actually have local data
+                // This prevents overwriting cloud data with empty local state on a new device
+                if (assets.length > 0) {
+                    console.log('Syncing local assets to new cloud document');
+                    saveAssetsToCloud();
+                } else {
+                    showToast(`No data found for ${user.email}`, 'info');
+                }
             }
         } catch (error) {
             console.error('Error loading from cloud:', error);
