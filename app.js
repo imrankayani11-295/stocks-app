@@ -1542,23 +1542,40 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSyncStatus('pending');
         try {
             console.log('Saving to cloud...', assets.length, 'assets');
-            await db.collection('users').doc(user.uid).set({
-                assets: assets,
-                currency: currency,
-                lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-            }, { merge: true });
+
+            // Create a timeout promise
+            const timeout = new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Connection timed out')), 10000)
+            );
+
+            // Race the save against the timeout
+            await Promise.race([
+                db.collection('users').doc(user.uid).set({
+                    assets: assets,
+                    currency: currency,
+                    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true }),
+                timeout
+            ]);
+
             console.log('Saved assets to cloud');
             updateSyncStatus('success');
             // showToast('Saved to cloud', 'success'); // Too noisy with auto-sync
         } catch (error) {
             console.error('Error saving to cloud:', error);
             updateSyncStatus('error');
-            showToast('Cloud Save Error: ' + error.message, 'error');
+
+            // Only show toast if it's not a background sync (optional refinement, but for now show all errors)
+            if (error.message === 'Connection timed out') {
+                showToast('Sync timed out: Weak connection', 'error');
+            } else {
+                showToast('Cloud Save Error: ' + error.message, 'error');
+            }
 
             // Auto-retry logic
-            if (error.code === 'unavailable' || error.message.includes('offline')) {
+            if (error.code === 'unavailable' || error.message.includes('offline') || error.message === 'Connection timed out') {
                 console.log('Scheduling retry...');
-                setTimeout(() => saveAssetsToCloud(), 5000); // Retry after 5 seconds
+                setTimeout(() => saveAssetsToCloud(), 10000); // Retry after 10 seconds
             }
         }
     }

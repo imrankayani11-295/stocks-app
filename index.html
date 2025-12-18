@@ -129,6 +129,12 @@
                             <i class="ph ph-google-logo"></i>
                             <span>Sign in with Google</span>
                         </button>
+                        <div id="user-profile" class="hidden">
+                            <button id="logout-btn" class="auth-btn logout full-width">
+                                <i class="ph ph-sign-out"></i>
+                                <span>Sign Out</span>
+                            </button>
+                        </div>
                     </div>
                 </section>
 
@@ -144,162 +150,146 @@
                         </div>
                     </div>
                 </section>
-                <div id="user-profile" class="hidden">
-                    <button id="logout-btn" class="auth-btn logout">
-                        <i class="ph ph-sign-out"></i>
-                        <span>Sign Out</span>
-                    </button>
 
-                </div>
+
+
+                <section class="settings-section">
+                    <h3>About</h3>
+                    <p class="settings-info">Asset Tracker v1.0</p>
+                    <p class="settings-info">Track your crypto, stocks, property, and more</p>
+                </section>
+            </main>
         </div>
-        </section>
+        <!-- End Settings View -->
 
-        <section class="settings-section">
-            <h3>Currency</h3>
-            <div class="segmented-control">
-                <input type="radio" name="currency" value="USD" id="curr-usd-settings" checked>
-                <label for="curr-usd-settings">USD ($)</label>
-                <input type="radio" name="currency" value="GBP" id="curr-gbp-settings">
-                <label for="curr-gbp-settings">GBP (£)</label>
-            </div>
-        </section>
-
-        <section class="settings-section">
-            <h3>About</h3>
-            <p class="settings-info">Asset Tracker v1.0</p>
-            <p class="settings-info">Track your crypto, stocks, property, and more</p>
-        </section>
-        </main>
-    </div>
-    <!-- End Settings View -->
-
-    <!-- Add Asset Modal -->
-    <div id="add-modal" class="modal hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Add Asset</h3>
-                <button id="close-modal" class="icon-btn"><i class="ph ph-x"></i></button>
-            </div>
-            <form id="add-form">
-                <div class="form-group">
-                    <label>Type</label>
-                    <div class="segmented-control scrollable">
-                        <input type="radio" name="type" value="crypto" id="type-crypto" checked>
-                        <label for="type-crypto">Crypto</label>
-                        <input type="radio" name="type" value="stock" id="type-stock">
-                        <label for="type-stock">Stock</label>
-                        <input type="radio" name="type" value="gold" id="type-gold">
-                        <label for="type-gold">Gold</label>
-                        <input type="radio" name="type" value="cash" id="type-cash">
-                        <label for="type-cash">Cash</label>
-                        <input type="radio" name="type" value="property" id="type-property">
-                        <label for="type-property">Property</label>
-                        <input type="radio" name="type" value="other" id="type-other">
-                        <label for="type-other">Other</label>
+        <!-- Add Asset Modal -->
+        <div id="add-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Add Asset</h3>
+                    <button id="close-modal" class="icon-btn"><i class="ph ph-x"></i></button>
+                </div>
+                <form id="add-form">
+                    <div class="form-group">
+                        <label>Type</label>
+                        <div class="segmented-control scrollable">
+                            <input type="radio" name="type" value="crypto" id="type-crypto" checked>
+                            <label for="type-crypto">Crypto</label>
+                            <input type="radio" name="type" value="stock" id="type-stock">
+                            <label for="type-stock">Stock</label>
+                            <input type="radio" name="type" value="gold" id="type-gold">
+                            <label for="type-gold">Gold</label>
+                            <input type="radio" name="type" value="cash" id="type-cash">
+                            <label for="type-cash">Cash</label>
+                            <input type="radio" name="type" value="property" id="type-property">
+                            <label for="type-property">Property</label>
+                            <input type="radio" name="type" value="other" id="type-other">
+                            <label for="type-other">Other</label>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group" id="asset-select-group">
-                    <label>Select Asset</label>
-                    <select id="asset-symbol">
-                        <!-- Options populated by JS -->
-                    </select>
-                </div>
-
-                <div class="form-group" id="asset-address-group" style="display: none;">
-                    <label>Property Address</label>
-                    <input type="text" id="asset-address" placeholder="123 Main Street, London">
-                </div>
-
-                <div class="form-group" id="asset-bank-group" style="display: none;">
-                    <label>Bank</label>
-                    <select id="asset-bank">
-                        <option value="">Select a bank...</option>
-                    </select>
-                </div>
-
-                <div class="form-group" id="asset-gold-group" style="display: none;">
-                    <label>Weight</label>
-                    <div style="display: flex; gap: 8px;">
-                        <input type="number" id="asset-gold-weight" placeholder="Amount" step="any" style="flex: 2;">
-                        <select id="asset-gold-unit" style="flex: 1;">
-                            <option value="grams">Grams</option>
-                            <option value="kg">Kilograms</option>
+                    <div class="form-group" id="asset-select-group">
+                        <label>Select Asset</label>
+                        <select id="asset-symbol">
+                            <!-- Options populated by JS -->
                         </select>
                     </div>
-                </div>
 
-                <div class="form-group" id="asset-manual-name-group" style="display: none;">
-                    <label>Asset Name</label>
-                    <input type="text" id="asset-manual-name" placeholder="e.g. Gold Bar, Savings">
-                </div>
+                    <div class="form-group" id="asset-address-group" style="display: none;">
+                        <label>Property Address</label>
+                        <input type="text" id="asset-address" placeholder="123 Main Street, London">
+                    </div>
 
-                <div class="form-group" id="asset-quantity-group">
-                    <label>Amount/Quantity</label>
-                    <input type="number" id="asset-amount" placeholder="0.00" step="any">
-                </div>
+                    <div class="form-group" id="asset-bank-group" style="display: none;">
+                        <label>Bank</label>
+                        <select id="asset-bank">
+                            <option value="">Select a bank...</option>
+                        </select>
+                    </div>
 
-                <div class="form-group" id="asset-manual-price-group" style="display: none;">
-                    <label>Current Value/Price</label>
-                    <input type="number" id="asset-manual-price" placeholder="0.00" step="any">
-                </div>
+                    <div class="form-group" id="asset-gold-group" style="display: none;">
+                        <label>Weight</label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="number" id="asset-gold-weight" placeholder="Amount" step="any"
+                                style="flex: 2;">
+                            <select id="asset-gold-unit" style="flex: 1;">
+                                <option value="grams">Grams</option>
+                                <option value="kg">Kilograms</option>
+                            </select>
+                        </div>
+                    </div>
 
-                <button type="submit" class="primary-btn">Add Asset</button>
-            </form>
-        </div>
-    </div>
+                    <div class="form-group" id="asset-manual-name-group" style="display: none;">
+                        <label>Asset Name</label>
+                        <input type="text" id="asset-manual-name" placeholder="e.g. Gold Bar, Savings">
+                    </div>
 
-    <!-- Settings Modal -->
+                    <div class="form-group" id="asset-quantity-group">
+                        <label>Amount/Quantity</label>
+                        <input type="number" id="asset-amount" placeholder="0.00" step="any">
+                    </div>
 
+                    <div class="form-group" id="asset-manual-price-group" style="display: none;">
+                        <label>Current Value/Price</label>
+                        <input type="number" id="asset-manual-price" placeholder="0.00" step="any">
+                    </div>
 
-    <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
-        <button class="nav-btn active" data-view="home">
-            <i class="ph ph-house-line"></i>
-            <span>Home</span>
-        </button>
-        <button class="nav-btn" data-view="growth">
-            <i class="ph ph-chart-line"></i>
-            <span>Growth</span>
-        </button>
-        <button class="nav-btn" data-view="settings">
-            <i class="ph ph-gear"></i>
-            <span>Settings</span>
-        </button>
-    </nav>
-
-    <!-- Edit Asset Modal -->
-    <div id="edit-modal" class="modal hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Edit Asset</h3>
-                <button class="icon-btn"
-                    onclick="document.getElementById('edit-modal').classList.remove('visible'); setTimeout(() => document.getElementById('edit-modal').classList.add('hidden'), 300);">
-                    <i class="ph ph-x"></i>
-                </button>
+                    <button type="submit" class="primary-btn">Add Asset</button>
+                </form>
             </div>
-            <form id="edit-form">
-                <div class="form-group">
-                    <label>Asset Name</label>
-                    <input type="text" id="edit-asset-name" disabled>
-                </div>
-
-                <div class="form-group">
-                    <label>Current Value/Price</label>
-                    <input type="number" id="edit-asset-price" step="any" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Amount/Quantity</label>
-                    <input type="number" id="edit-asset-amount" step="any" required>
-                </div>
-
-                <button type="submit" class="primary-btn">Update Asset</button>
-            </form>
         </div>
-    </div>
 
-    <script src="app.js"></script>
+        <!-- Settings Modal -->
+
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-btn active" data-view="home">
+                <i class="ph ph-house-line"></i>
+                <span>Home</span>
+            </button>
+            <button class="nav-btn" data-view="growth">
+                <i class="ph ph-chart-line"></i>
+                <span>Growth</span>
+            </button>
+            <button class="nav-btn" data-view="settings">
+                <i class="ph ph-gear"></i>
+                <span>Settings</span>
+            </button>
+        </nav>
+
+        <!-- Edit Asset Modal -->
+        <div id="edit-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Edit Asset</h3>
+                    <button class="icon-btn"
+                        onclick="document.getElementById('edit-modal').classList.remove('visible'); setTimeout(() => document.getElementById('edit-modal').classList.add('hidden'), 300);">
+                        <i class="ph ph-x"></i>
+                    </button>
+                </div>
+                <form id="edit-form">
+                    <div class="form-group">
+                        <label>Asset Name</label>
+                        <input type="text" id="edit-asset-name" disabled>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Current Value/Price</label>
+                        <input type="number" id="edit-asset-price" step="any" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Amount/Quantity</label>
+                        <input type="number" id="edit-asset-amount" step="any" required>
+                    </div>
+
+                    <button type="submit" class="primary-btn">Update Asset</button>
+                </form>
+            </div>
+        </div>
+
+        <script src="app.js"></script>
 </body>
 
 </html>
