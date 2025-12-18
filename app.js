@@ -2,9 +2,14 @@
 let assets = JSON.parse(localStorage.getItem('assets')) || [];
 let currency = localStorage.getItem('currency') || 'USD';
 let currentTab = 'all';
-let currentView = 'home'; // home, growth, settings
-let projectionYears = 5;
-let allocationChart = null;
+let currentView = 'home';
+let projectionYears = 10;
+let theme = localStorage.getItem('theme') || 'dark';
+
+// Apply initial theme
+if (theme === 'light') {
+    document.body.classList.add('light-mode');
+}
 const COINBASE_API = 'https://api.coinbase.com/v2/prices';
 
 // UK Banks List
@@ -167,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 emailDisplay.style.fontSize = '14px';
                 userProfile.insertBefore(emailDisplay, userProfile.firstChild);
             }
-            emailDisplay.textContent = `Signed in as: ${user.email} (ID: ${user.uid.slice(0, 5)})`;
+            emailDisplay.textContent = 'Signed in as: ' + user.email;
 
             // Test Cloud Button removed as requested
         } else {
@@ -264,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (data.currency) {
                     currency = data.currency;
                     localStorage.setItem('currency', currency);
-                    const radio = document.querySelector(`input[name="currency"][value="${currency}"]`);
+                    const radio = document.querySelector(`input[name = "currency"][value = "${currency}"]`);
                     if (radio) radio.checked = true;
                 }
             } else {
@@ -308,7 +313,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Set initial currency radio
-        document.querySelector(`input[name="currency"][value="${currency}"]`).checked = true;
+        document.querySelector(`input[name = "currency"][value = "${currency}"]`).checked = true;
+        // Set initial theme radio
+        document.querySelector(`input[name="theme"][value="${theme}"]`).checked = true;
 
         // Initialize free UK postcode autocomplete
         // Initialize custom address autocomplete
@@ -477,6 +484,20 @@ document.addEventListener('DOMContentLoaded', () => {
             currency = e.target.value;
             localStorage.setItem('currency', currency);
             renderAssets();
+        });
+    });
+
+    // Theme Listener
+    const themeRadios = document.querySelectorAll('input[name="theme"]');
+    themeRadios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            theme = e.target.value;
+            localStorage.setItem('theme', theme);
+            if (theme === 'light') {
+                document.body.classList.add('light-mode');
+            } else {
+                document.body.classList.remove('light-mode');
+            }
         });
     });
 
@@ -1650,7 +1671,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     renderAssets();
                     if (currentView === 'growth') renderGrowthTab();
 
-                    showToast(`Loaded ${assets.length} assets for user ${user.email}`, 'success');
                 }
                 if (data.currency) {
                     currency = data.currency;

@@ -14,6 +14,18 @@
     --font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
 }
 
+/* Light Mode Override */
+body.light-mode {
+    --cb-bg: #FFFFFF;
+    --cb-bg-secondary: #F5F7FA;
+    --cb-border: #E6E8EB;
+    --cb-text-primary: #0A0B0D;
+    --cb-text-secondary: #5B616E;
+    --cb-blue: #0052FF;
+    --cb-blue-dark: #0041CC;
+    --cb-blue-light: #EBF1FF;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
