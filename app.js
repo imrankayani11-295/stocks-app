@@ -86,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize Firebase
     let auth, db, user = null;
     let isFirebaseInitialized = false;
+    let isOfflineMode = false; // Track offline state to suppress noisy toasts
 
     (async function initializeFirebase() {
         try {
@@ -1560,22 +1561,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
             console.log('Saved assets to cloud');
             updateSyncStatus('success');
-            // showToast('Saved to cloud', 'success'); // Too noisy with auto-sync
+
+            if (isOfflineMode) {
+                isOfflineMode = false;
+                showToast('Connection restored: Synced', 'success');
+            }
         } catch (error) {
             console.error('Error saving to cloud:', error);
             updateSyncStatus('error');
 
-            // Only show toast if it's not a background sync (optional refinement, but for now show all errors)
-            if (error.message === 'Connection timed out') {
-                showToast('Sync timed out: Weak connection', 'error');
-            } else {
-                showToast('Cloud Save Error: ' + error.message, 'error');
-            }
+            const isNetworkError = error.code === 'unavailable' || error.message.includes('offline') || error.message === 'Connection timed out';
 
-            // Auto-retry logic
-            if (error.code === 'unavailable' || error.message.includes('offline') || error.message === 'Connection timed out') {
-                console.log('Scheduling retry...');
-                setTimeout(() => saveAssetsToCloud(), 10000); // Retry after 10 seconds
+            if (isNetworkError) {
+                if (!isOfflineMode) {
+                    // First time entering offline mode
+                    isOfflineMode = true;
+                    showToast('Offline Mode: Saving locally', 'info');
+                } else {
+                    // Already offline, stay silent
+                    console.log('Still offline, suppressing toast');
+                }
+
+                // Retry logic (Slower retry when offline to save battery)
+                console.log('Scheduling background retry...');
+                setTimeout(() => saveAssetsToCloud(), 60000); // Retry every 60 seconds
+            } else {
+                // Real error (permission, etc) - always show
+                showToast('Cloud Save Error: ' + error.message, 'error');
             }
         }
     }
