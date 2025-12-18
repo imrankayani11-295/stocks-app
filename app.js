@@ -1644,7 +1644,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            showToast('Connection Error: Check internet or AdBlock', 'error');
+            showToast('Offline Mode: Changes saved locally', 'info');
 
             // Fallback to local storage
             console.log('Falling back to local storage...');
