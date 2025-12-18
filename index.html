@@ -34,125 +34,141 @@
                     <h1>Assetly</h1>
 
                 </div>
-                <div id="sync-status" class="sync-status hidden">
-                    <i class="ph ph-cloud-check"></i>
+                <div class="header-actions">
+                    <div id="sync-status" class="sync-status hidden">
+                        <i class="ph ph-cloud-check"></i>
+                    </div>
+                    <button id="settings-btn" class="icon-btn"><i class="ph ph-gear"></i></button>
+                    <button id="add-btn" class="icon-btn"><i class="ph ph-plus"></i></button>
                 </div>
-                <button id="settings-btn" class="icon-btn"><i class="ph ph-gear"></i></button>
-                <button id="add-btn" class="icon-btn"><i class="ph ph-plus"></i></button>
+            </header>
+
+            <nav class="tabs">
+                <button class="tab-btn active" data-tab="all">All</button>
+                <button class="tab-btn" data-tab="crypto">Crypto</button>
+                <button class="tab-btn" data-tab="stock">Stocks</button>
+                <button class="tab-btn" data-tab="gold">Gold</button>
+                <button class="tab-btn" data-tab="cash">Cash</button>
+                <button class="tab-btn" data-tab="property">Property</button>
+                <button class="tab-btn" data-tab="other">Other</button>
+            </nav>
+
+            <main>
+                <section class="balance-card">
+                    <span class="label">Total Balance</span>
+                    <h2 id="total-balance">$0.00</h2>
+                </section>
+
+                <section class="assets-list">
+                    <div class="section-header">
+                        <h3>Your Assets</h3>
+                    </div>
+                    <div id="assets-container">
+                        <!-- Assets will be injected here -->
+                        <div class="empty-state">
+                            <p>No assets yet. Tap + to add.</p>
+                        </div>
+                    </div>
+                </section>
+            </main>
         </div>
-        </header>
+        <!-- End Home View -->
 
-        <nav class="tabs">
-            <button class="tab-btn active" data-tab="all">All</button>
-            <button class="tab-btn" data-tab="crypto">Crypto</button>
-            <button class="tab-btn" data-tab="stock">Stocks</button>
-            <button class="tab-btn" data-tab="gold">Gold</button>
-            <button class="tab-btn" data-tab="cash">Cash</button>
-            <button class="tab-btn" data-tab="property">Property</button>
-            <button class="tab-btn" data-tab="other">Other</button>
-        </nav>
+        <!-- Growth Tab Content -->
+        <div id="growth-view" class="tab-view">
+            <header class="header">
+                <h1>Growth</h1>
+            </header>
 
-        <main>
-            <section class="balance-card">
-                <span class="label">Total Balance</span>
-                <h2 id="total-balance">$0.00</h2>
-            </section>
+            <main>
+                <section class="balance-card">
+                    <span class="label">Portfolio Projection</span>
+                    <h2 id="projected-balance">$0.00</h2>
+                    <p class="projection-years">in <span id="projection-years-display">5</span> years</p>
+                </section>
 
-            <section class="assets-list">
-                <div class="section-header">
-                    <h3>Your Assets</h3>
-                </div>
-                <div id="assets-container">
-                    <!-- Assets will be injected here -->
-                    <div class="empty-state">
-                        <p>No assets yet. Tap + to add.</p>
+                <section class="chart-section">
+                    <h3>Asset Allocation</h3>
+                    <div class="chart-container">
+                        <canvas id="allocation-chart"></canvas>
                     </div>
-                </div>
-            </section>
-        </main>
-    </div>
-    <!-- End Home View -->
+                </section>
 
-    <!-- Growth Tab Content -->
-    <div id="growth-view" class="tab-view">
-        <header class="header">
-            <h1>Growth</h1>
-        </header>
-
-        <main>
-            <section class="balance-card">
-                <span class="label">Portfolio Projection</span>
-                <h2 id="projected-balance">$0.00</h2>
-                <p class="projection-years">in <span id="projection-years-display">5</span> years</p>
-            </section>
-
-            <section class="chart-section">
-                <h3>Asset Allocation</h3>
-                <div class="chart-container">
-                    <canvas id="allocation-chart"></canvas>
-                </div>
-            </section>
-
-            <section class="projection-section">
-                <h3>Time Projection</h3>
-                <div class="slider-container">
-                    <input type="range" id="years-slider" min="1" max="20" value="5" class="years-slider">
-                    <div class="slider-labels">
-                        <span>1 year</span>
-                        <span>20 years</span>
+                <section class="projection-section">
+                    <h3>Time Projection</h3>
+                    <div class="slider-container">
+                        <input type="range" id="years-slider" min="1" max="20" value="5" class="years-slider">
+                        <div class="slider-labels">
+                            <span>1 year</span>
+                            <span>20 years</span>
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <section class="insights-section">
-                <h3>AI Insights</h3>
-                <div id="ai-insights" class="insights-container">
-                    <!-- AI insights will be populated here -->
-                </div>
-            </section>
-        </main>
-    </div>
-    <!-- End Growth View -->
+                <section class="insights-section">
+                    <h3>AI Insights</h3>
+                    <div id="ai-insights" class="insights-container">
+                        <!-- AI insights will be populated here -->
+                    </div>
+                </section>
+            </main>
+        </div>
+        <!-- End Growth View -->
 
-    <!-- Settings Tab Content -->
-    <div id="settings-view" class="tab-view">
-        <header class="header">
-            <h1>Settings</h1>
-        </header>
+        <!-- Settings Tab Content -->
+        <div id="settings-view" class="tab-view">
+            <header class="header">
+                <h1>Settings</h1>
+            </header>
 
-        <main>
-            <section class="settings-section">
-                <h3>Account</h3>
-                <div id="auth-container">
-                    <button id="login-btn" class="auth-btn full-width">
-                        <i class="ph ph-google-logo"></i>
-                        <span>Sign in with Google</span>
-                    </button>
-                    <div id="user-profile" class="hidden">
-                        <button id="logout-btn" class="auth-btn logout">
-                            <i class="ph ph-sign-out"></i>
-                            <span>Sign Out</span>
+            <main>
+                <section class="settings-section">
+                    <h3>Account</h3>
+                    <div id="auth-container">
+                        <button id="login-btn" class="auth-btn full-width">
+                            <i class="ph ph-google-logo"></i>
+                            <span>Sign in with Google</span>
                         </button>
-
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <section class="settings-section">
-                <h3>Currency</h3>
-                <div class="segmented-control">
-                    <input type="radio" name="currency" value="USD" id="curr-usd-settings" checked>
-                    <label for="curr-usd-settings">USD ($)</label>
-                    <input type="radio" name="currency" value="GBP" id="curr-gbp-settings">
-                    <label for="curr-gbp-settings">GBP (£)</label>
-                </div>
-            </section>
+                <section class="settings-section">
+                    <h3>Preferences</h3>
+                    <div class="form-group">
+                        <label>Currency</label>
+                        <div class="segmented-control">
+                            <input type="radio" name="currency" value="USD" id="curr-usd" checked>
+                            <label for="curr-usd">USD ($)</label>
+                            <input type="radio" name="currency" value="GBP" id="curr-gbp">
+                            <label for="curr-gbp">GBP (£)</label>
+                        </div>
+                    </div>
+                </section>
+                <div id="user-profile" class="hidden">
+                    <button id="logout-btn" class="auth-btn logout">
+                        <i class="ph ph-sign-out"></i>
+                        <span>Sign Out</span>
+                    </button>
 
-            <section class="settings-section">
-                <h3>About</h3>
-                <p class="settings-info">Asset Tracker v1.0</p>
-                <p class="settings-info">Track your crypto, stocks, property, and more</p>
-            </section>
+                </div>
+        </div>
+        </section>
+
+        <section class="settings-section">
+            <h3>Currency</h3>
+            <div class="segmented-control">
+                <input type="radio" name="currency" value="USD" id="curr-usd-settings" checked>
+                <label for="curr-usd-settings">USD ($)</label>
+                <input type="radio" name="currency" value="GBP" id="curr-gbp-settings">
+                <label for="curr-gbp-settings">GBP (£)</label>
+            </div>
+        </section>
+
+        <section class="settings-section">
+            <h3>About</h3>
+            <p class="settings-info">Asset Tracker v1.0</p>
+            <p class="settings-info">Track your crypto, stocks, property, and more</p>
+        </section>
         </main>
     </div>
     <!-- End Settings View -->
@@ -234,23 +250,7 @@
     </div>
 
     <!-- Settings Modal -->
-    <div id="settings-modal" class="modal hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Settings</h3>
-                <button id="close-settings" class="icon-btn"><i class="ph ph-x"></i></button>
-            </div>
-            <div class="form-group">
-                <label>Currency</label>
-                <div class="segmented-control">
-                    <input type="radio" name="currency" value="USD" id="curr-usd" checked>
-                    <label for="curr-usd">USD ($)</label>
-                    <input type="radio" name="currency" value="GBP" id="curr-gbp">
-                    <label for="curr-gbp">GBP (£)</label>
-                </div>
-            </div>
-        </div>
-    </div>
+
 
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">

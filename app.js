@@ -136,8 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const typeRadios = document.querySelectorAll('input[name="type"]');
     const tabBtns = document.querySelectorAll('.tab-btn');
     const settingsBtn = document.getElementById('settings-btn');
-    const settingsModal = document.getElementById('settings-modal');
-    const closeSettingsBtn = document.getElementById('close-settings');
+    // Settings Modal removed
     const currencyRadios = document.querySelectorAll('input[name="currency"]');
     const navBtns = document.querySelectorAll('.nav-btn');
     const views = document.querySelectorAll('.tab-view');
@@ -455,14 +454,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Settings Logic
     settingsBtn.addEventListener('click', () => {
-        settingsModal.classList.remove('hidden');
-        setTimeout(() => settingsModal.classList.add('visible'), 10);
+        // Switch to Settings Tab
+        navBtns.forEach(b => b.classList.remove('active'));
+        // Find the settings nav button
+        const settingsNavBtn = document.querySelector('.nav-btn[data-view="settings"]');
+        if (settingsNavBtn) settingsNavBtn.classList.add('active');
+
+        views.forEach(v => v.classList.remove('active'));
+        document.getElementById('settings-view').classList.add('active');
+        currentView = 'settings';
     });
 
-    closeSettingsBtn.addEventListener('click', () => {
-        settingsModal.classList.remove('visible');
-        setTimeout(() => settingsModal.classList.add('hidden'), 300);
-    });
+    // Close Settings Button removed
 
     currencyRadios.forEach(radio => {
         radio.addEventListener('change', (e) => {
@@ -1571,11 +1574,30 @@ document.addEventListener('DOMContentLoaded', () => {
         const i = icon.querySelector('i');
         if (status === 'success') {
             i.className = 'ph ph-cloud-check';
+            updateLastSyncedText('Just now');
         } else if (status === 'pending') {
             i.className = 'ph ph-arrows-clockwise';
+            updateLastSyncedText('Syncing...');
         } else if (status === 'error') {
             i.className = 'ph ph-cloud-slash';
+            updateLastSyncedText('Offline');
         }
+    }
+
+    function updateLastSyncedText(text) {
+        let el = document.getElementById('last-synced-text');
+        if (!el) {
+            const container = document.querySelector('.settings-section'); // Add to first section
+            if (container) {
+                el = document.createElement('p');
+                el.id = 'last-synced-text';
+                el.style.color = '#8A8FA3';
+                el.style.fontSize = '12px';
+                el.style.marginTop = '8px';
+                container.appendChild(el);
+            }
+        }
+        if (el) el.textContent = `Last Synced: ${text}`;
     }
 
     async function loadAssetsFromCloud() {
