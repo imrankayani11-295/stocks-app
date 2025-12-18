@@ -192,6 +192,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const provider = new firebase.auth.GoogleAuthProvider();
+            // Force account selection prompt
+            provider.setCustomParameters({
+                prompt: 'select_account'
+            });
             console.log('Starting sign in with POPUP...');
 
             auth.signInWithPopup(provider)
