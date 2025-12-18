@@ -34,203 +34,204 @@
                     <h1>Assetly</h1>
 
                 </div>
-                <div class="header-actions">
-                    <button id="settings-btn" class="icon-btn"><i class="ph ph-gear"></i></button>
-                    <button id="add-btn" class="icon-btn"><i class="ph ph-plus"></i></button>
+                <div id="sync-status" class="sync-status hidden">
+                    <i class="ph ph-cloud-check"></i>
                 </div>
-            </header>
-
-            <nav class="tabs">
-                <button class="tab-btn active" data-tab="all">All</button>
-                <button class="tab-btn" data-tab="crypto">Crypto</button>
-                <button class="tab-btn" data-tab="stock">Stocks</button>
-                <button class="tab-btn" data-tab="gold">Gold</button>
-                <button class="tab-btn" data-tab="cash">Cash</button>
-                <button class="tab-btn" data-tab="property">Property</button>
-                <button class="tab-btn" data-tab="other">Other</button>
-            </nav>
-
-            <main>
-                <section class="balance-card">
-                    <span class="label">Total Balance</span>
-                    <h2 id="total-balance">$0.00</h2>
-                </section>
-
-                <section class="assets-list">
-                    <div class="section-header">
-                        <h3>Your Assets</h3>
-                    </div>
-                    <div id="assets-container">
-                        <!-- Assets will be injected here -->
-                        <div class="empty-state">
-                            <p>No assets yet. Tap + to add.</p>
-                        </div>
-                    </div>
-                </section>
-            </main>
+                <button id="settings-btn" class="icon-btn"><i class="ph ph-gear"></i></button>
+                <button id="add-btn" class="icon-btn"><i class="ph ph-plus"></i></button>
         </div>
-        <!-- End Home View -->
+        </header>
 
-        <!-- Growth Tab Content -->
-        <div id="growth-view" class="tab-view">
-            <header class="header">
-                <h1>Growth</h1>
-            </header>
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="all">All</button>
+            <button class="tab-btn" data-tab="crypto">Crypto</button>
+            <button class="tab-btn" data-tab="stock">Stocks</button>
+            <button class="tab-btn" data-tab="gold">Gold</button>
+            <button class="tab-btn" data-tab="cash">Cash</button>
+            <button class="tab-btn" data-tab="property">Property</button>
+            <button class="tab-btn" data-tab="other">Other</button>
+        </nav>
 
-            <main>
-                <section class="balance-card">
-                    <span class="label">Portfolio Projection</span>
-                    <h2 id="projected-balance">$0.00</h2>
-                    <p class="projection-years">in <span id="projection-years-display">5</span> years</p>
-                </section>
+        <main>
+            <section class="balance-card">
+                <span class="label">Total Balance</span>
+                <h2 id="total-balance">$0.00</h2>
+            </section>
 
-                <section class="chart-section">
-                    <h3>Asset Allocation</h3>
-                    <div class="chart-container">
-                        <canvas id="allocation-chart"></canvas>
+            <section class="assets-list">
+                <div class="section-header">
+                    <h3>Your Assets</h3>
+                </div>
+                <div id="assets-container">
+                    <!-- Assets will be injected here -->
+                    <div class="empty-state">
+                        <p>No assets yet. Tap + to add.</p>
                     </div>
-                </section>
+                </div>
+            </section>
+        </main>
+    </div>
+    <!-- End Home View -->
 
-                <section class="projection-section">
-                    <h3>Time Projection</h3>
-                    <div class="slider-container">
-                        <input type="range" id="years-slider" min="1" max="20" value="5" class="years-slider">
-                        <div class="slider-labels">
-                            <span>1 year</span>
-                            <span>20 years</span>
-                        </div>
+    <!-- Growth Tab Content -->
+    <div id="growth-view" class="tab-view">
+        <header class="header">
+            <h1>Growth</h1>
+        </header>
+
+        <main>
+            <section class="balance-card">
+                <span class="label">Portfolio Projection</span>
+                <h2 id="projected-balance">$0.00</h2>
+                <p class="projection-years">in <span id="projection-years-display">5</span> years</p>
+            </section>
+
+            <section class="chart-section">
+                <h3>Asset Allocation</h3>
+                <div class="chart-container">
+                    <canvas id="allocation-chart"></canvas>
+                </div>
+            </section>
+
+            <section class="projection-section">
+                <h3>Time Projection</h3>
+                <div class="slider-container">
+                    <input type="range" id="years-slider" min="1" max="20" value="5" class="years-slider">
+                    <div class="slider-labels">
+                        <span>1 year</span>
+                        <span>20 years</span>
                     </div>
-                </section>
+                </div>
+            </section>
 
-                <section class="insights-section">
-                    <h3>AI Insights</h3>
-                    <div id="ai-insights" class="insights-container">
-                        <!-- AI insights will be populated here -->
-                    </div>
-                </section>
-            </main>
-        </div>
-        <!-- End Growth View -->
+            <section class="insights-section">
+                <h3>AI Insights</h3>
+                <div id="ai-insights" class="insights-container">
+                    <!-- AI insights will be populated here -->
+                </div>
+            </section>
+        </main>
+    </div>
+    <!-- End Growth View -->
 
-        <!-- Settings Tab Content -->
-        <div id="settings-view" class="tab-view">
-            <header class="header">
-                <h1>Settings</h1>
-            </header>
+    <!-- Settings Tab Content -->
+    <div id="settings-view" class="tab-view">
+        <header class="header">
+            <h1>Settings</h1>
+        </header>
 
-            <main>
-                <section class="settings-section">
-                    <h3>Account</h3>
-                    <div id="auth-container">
-                        <button id="login-btn" class="auth-btn full-width">
-                            <i class="ph ph-google-logo"></i>
-                            <span>Sign in with Google</span>
+        <main>
+            <section class="settings-section">
+                <h3>Account</h3>
+                <div id="auth-container">
+                    <button id="login-btn" class="auth-btn full-width">
+                        <i class="ph ph-google-logo"></i>
+                        <span>Sign in with Google</span>
+                    </button>
+                    <div id="user-profile" class="hidden">
+                        <button id="logout-btn" class="auth-btn logout">
+                            <i class="ph ph-sign-out"></i>
+                            <span>Sign Out</span>
                         </button>
-                        <div id="user-profile" class="hidden">
-                            <button id="logout-btn" class="auth-btn logout">
-                                <i class="ph ph-sign-out"></i>
-                                <span>Sign Out</span>
-                            </button>
 
-                        </div>
                     </div>
-                </section>
-
-                <section class="settings-section">
-                    <h3>Currency</h3>
-                    <div class="segmented-control">
-                        <input type="radio" name="currency" value="USD" id="curr-usd-settings" checked>
-                        <label for="curr-usd-settings">USD ($)</label>
-                        <input type="radio" name="currency" value="GBP" id="curr-gbp-settings">
-                        <label for="curr-gbp-settings">GBP (£)</label>
-                    </div>
-                </section>
-
-                <section class="settings-section">
-                    <h3>About</h3>
-                    <p class="settings-info">Asset Tracker v1.0</p>
-                    <p class="settings-info">Track your crypto, stocks, property, and more</p>
-                </section>
-            </main>
-        </div>
-        <!-- End Settings View -->
-
-        <!-- Add Asset Modal -->
-        <div id="add-modal" class="modal hidden">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3>Add Asset</h3>
-                    <button id="close-modal" class="icon-btn"><i class="ph ph-x"></i></button>
                 </div>
-                <form id="add-form">
-                    <div class="form-group">
-                        <label>Type</label>
-                        <div class="segmented-control scrollable">
-                            <input type="radio" name="type" value="crypto" id="type-crypto" checked>
-                            <label for="type-crypto">Crypto</label>
-                            <input type="radio" name="type" value="stock" id="type-stock">
-                            <label for="type-stock">Stock</label>
-                            <input type="radio" name="type" value="gold" id="type-gold">
-                            <label for="type-gold">Gold</label>
-                            <input type="radio" name="type" value="cash" id="type-cash">
-                            <label for="type-cash">Cash</label>
-                            <input type="radio" name="type" value="property" id="type-property">
-                            <label for="type-property">Property</label>
-                            <input type="radio" name="type" value="other" id="type-other">
-                            <label for="type-other">Other</label>
-                        </div>
-                    </div>
+            </section>
 
-                    <div class="form-group" id="asset-select-group">
-                        <label>Select Asset</label>
-                        <select id="asset-symbol">
-                            <!-- Options populated by JS -->
-                        </select>
-                    </div>
+            <section class="settings-section">
+                <h3>Currency</h3>
+                <div class="segmented-control">
+                    <input type="radio" name="currency" value="USD" id="curr-usd-settings" checked>
+                    <label for="curr-usd-settings">USD ($)</label>
+                    <input type="radio" name="currency" value="GBP" id="curr-gbp-settings">
+                    <label for="curr-gbp-settings">GBP (£)</label>
+                </div>
+            </section>
 
-                    <div class="form-group" id="asset-address-group" style="display: none;">
-                        <label>Property Address</label>
-                        <input type="text" id="asset-address" placeholder="123 Main Street, London">
-                    </div>
+            <section class="settings-section">
+                <h3>About</h3>
+                <p class="settings-info">Asset Tracker v1.0</p>
+                <p class="settings-info">Track your crypto, stocks, property, and more</p>
+            </section>
+        </main>
+    </div>
+    <!-- End Settings View -->
 
-                    <div class="form-group" id="asset-bank-group" style="display: none;">
-                        <label>Bank</label>
-                        <select id="asset-bank">
-                            <option value="">Select a bank...</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group" id="asset-gold-group" style="display: none;">
-                        <label>Weight</label>
-                        <div style="display: flex; gap: 8px;">
-                            <input type="number" id="asset-gold-weight" placeholder="Amount" step="any"
-                                style="flex: 2;">
-                            <select id="asset-gold-unit" style="flex: 1;">
-                                <option value="grams">Grams</option>
-                                <option value="kg">Kilograms</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group" id="asset-manual-name-group" style="display: none;">
-                        <label>Asset Name</label>
-                        <input type="text" id="asset-manual-name" placeholder="e.g. Gold Bar, Savings">
-                    </div>
-
-                    <div class="form-group" id="asset-quantity-group">
-                        <label>Amount/Quantity</label>
-                        <input type="number" id="asset-amount" placeholder="0.00" step="any">
-                    </div>
-
-                    <div class="form-group" id="asset-manual-price-group" style="display: none;">
-                        <label>Current Value/Price</label>
-                        <input type="number" id="asset-manual-price" placeholder="0.00" step="any">
-                    </div>
-
-                    <button type="submit" class="primary-btn">Add Asset</button>
-                </form>
+    <!-- Add Asset Modal -->
+    <div id="add-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Asset</h3>
+                <button id="close-modal" class="icon-btn"><i class="ph ph-x"></i></button>
             </div>
+            <form id="add-form">
+                <div class="form-group">
+                    <label>Type</label>
+                    <div class="segmented-control scrollable">
+                        <input type="radio" name="type" value="crypto" id="type-crypto" checked>
+                        <label for="type-crypto">Crypto</label>
+                        <input type="radio" name="type" value="stock" id="type-stock">
+                        <label for="type-stock">Stock</label>
+                        <input type="radio" name="type" value="gold" id="type-gold">
+                        <label for="type-gold">Gold</label>
+                        <input type="radio" name="type" value="cash" id="type-cash">
+                        <label for="type-cash">Cash</label>
+                        <input type="radio" name="type" value="property" id="type-property">
+                        <label for="type-property">Property</label>
+                        <input type="radio" name="type" value="other" id="type-other">
+                        <label for="type-other">Other</label>
+                    </div>
+                </div>
+
+                <div class="form-group" id="asset-select-group">
+                    <label>Select Asset</label>
+                    <select id="asset-symbol">
+                        <!-- Options populated by JS -->
+                    </select>
+                </div>
+
+                <div class="form-group" id="asset-address-group" style="display: none;">
+                    <label>Property Address</label>
+                    <input type="text" id="asset-address" placeholder="123 Main Street, London">
+                </div>
+
+                <div class="form-group" id="asset-bank-group" style="display: none;">
+                    <label>Bank</label>
+                    <select id="asset-bank">
+                        <option value="">Select a bank...</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="asset-gold-group" style="display: none;">
+                    <label>Weight</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="number" id="asset-gold-weight" placeholder="Amount" step="any" style="flex: 2;">
+                        <select id="asset-gold-unit" style="flex: 1;">
+                            <option value="grams">Grams</option>
+                            <option value="kg">Kilograms</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" id="asset-manual-name-group" style="display: none;">
+                    <label>Asset Name</label>
+                    <input type="text" id="asset-manual-name" placeholder="e.g. Gold Bar, Savings">
+                </div>
+
+                <div class="form-group" id="asset-quantity-group">
+                    <label>Amount/Quantity</label>
+                    <input type="number" id="asset-amount" placeholder="0.00" step="any">
+                </div>
+
+                <div class="form-group" id="asset-manual-price-group" style="display: none;">
+                    <label>Current Value/Price</label>
+                    <input type="number" id="asset-manual-price" placeholder="0.00" step="any">
+                </div>
+
+                <button type="submit" class="primary-btn">Add Asset</button>
+            </form>
         </div>
+    </div>
     </div>
     <!-- Settings Modal -->
     <div id="settings-modal" class="modal hidden">

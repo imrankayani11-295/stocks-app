@@ -1536,6 +1536,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Cloud Sync Functions
     async function saveAssetsToCloud() {
         if (!user || !db) return;
+        updateSyncStatus('pending');
         try {
             console.log('Saving to cloud...', assets.length, 'assets');
             await db.collection('users').doc(user.uid).set({
@@ -1544,10 +1545,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
             }, { merge: true });
             console.log('Saved assets to cloud');
-            showToast('Saved to cloud', 'success');
+            updateSyncStatus('success');
+            // showToast('Saved to cloud', 'success'); // Too noisy with auto-sync
         } catch (error) {
             console.error('Error saving to cloud:', error);
+            updateSyncStatus('error');
             showToast('Cloud Save Error: ' + error.message, 'error');
+
+            // Auto-retry logic
+            if (error.code === 'unavailable' || error.message.includes('offline')) {
+                console.log('Scheduling retry...');
+                setTimeout(() => saveAssetsToCloud(), 5000); // Retry after 5 seconds
+            }
+        }
+    }
+
+    // Sync Status Helper
+    function updateSyncStatus(status) {
+        const icon = document.getElementById('sync-status');
+        if (!icon) return;
+
+        icon.classList.remove('hidden', 'success', 'pending', 'error');
+        icon.classList.add(status);
+
+        const i = icon.querySelector('i');
+        if (status === 'success') {
+            i.className = 'ph ph-cloud-check';
+        } else if (status === 'pending') {
+            i.className = 'ph ph-arrows-clockwise';
+        } else if (status === 'error') {
+            i.className = 'ph ph-cloud-slash';
         }
     }
 
