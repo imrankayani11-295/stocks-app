@@ -3,8 +3,9 @@ let assets = JSON.parse(localStorage.getItem('assets')) || [];
 let currency = localStorage.getItem('currency') || 'USD';
 let currentTab = 'all';
 let currentView = 'home';
-let projectionYears = 10;
+let projectionYears = 5; // Default matches HTML slider value
 let theme = localStorage.getItem('theme') || 'dark';
+let allocationChart = null; // Chart.js instance for allocation chart
 
 // Apply initial theme
 if (theme === 'light') {
@@ -316,6 +317,11 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector(`input[name = "currency"][value = "${currency}"]`).checked = true;
         // Set initial theme radio
         document.querySelector(`input[name="theme"][value="${theme}"]`).checked = true;
+        // Sync projection years from slider
+        const yearsSlider = document.getElementById('years-slider');
+        if (yearsSlider) {
+            projectionYears = parseInt(yearsSlider.value) || 5;
+        }
 
         // Initialize free UK postcode autocomplete
         // Initialize custom address autocomplete
@@ -1264,19 +1270,46 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderPieChart() {
-        const ctx = document.getElementById('allocation-chart').getContext('2d');
+        // Check if Chart.js is loaded
+        if (typeof Chart === 'undefined') {
+            console.error('Chart.js is not loaded');
+            return;
+        }
+
+        const chartElement = document.getElementById('allocation-chart');
+        if (!chartElement) {
+            console.error('Allocation chart element not found');
+            return;
+        }
+
+        // Use requestAnimationFrame to ensure DOM is updated and view is visible
+        requestAnimationFrame(() => {
+            const ctx = chartElement.getContext('2d');
 
         // Aggregate by type
         const typeValues = {};
         assets.forEach(asset => {
-            const value = asset.amount * asset.currentPrice;
-            typeValues[asset.type] = (typeValues[asset.type] || 0) + value;
+            const value = asset.amount * (asset.currentPrice || 0);
+            if (value > 0) {
+                typeValues[asset.type] = (typeValues[asset.type] || 0) + value;
+            }
         });
 
+        // Check if we have data to display
         const labels = Object.keys(typeValues).map(type =>
             type.charAt(0).toUpperCase() + type.slice(1)
         );
         const data = Object.values(typeValues);
+
+        if (data.length === 0 || data.every(val => val === 0)) {
+            // No data to display, clear chart if exists
+            if (allocationChart) {
+                allocationChart.destroy();
+                allocationChart = null;
+            }
+            return;
+        }
+
         const colors = {
             crypto: '#0052FF',
             stock: '#05B169',
@@ -1290,6 +1323,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Destroy previous chart if exists
         if (allocationChart) {
             allocationChart.destroy();
+            allocationChart = null;
         }
 
         allocationChart = new Chart(ctx, {
@@ -1331,6 +1365,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
+        }); // End requestAnimationFrame
     }
 
     function generateAIInsights() {
