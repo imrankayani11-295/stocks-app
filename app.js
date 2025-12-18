@@ -1270,11 +1270,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderPieChart() {
+        const chartElement = document.getElementById('allocation-chart');
+        if (!chartElement) {
+            console.error('Allocation chart element not found');
+            return;
+        }
+
         // Check if Chart.js is loaded - wait up to 2 seconds for it
         let retries = 0;
         const maxRetries = 20;
         
         const tryRender = () => {
+            // Check if Chart.js is loaded
             if (typeof Chart === 'undefined') {
                 retries++;
                 if (retries < maxRetries) {
@@ -1286,27 +1293,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            const chartElement = document.getElementById('allocation-chart');
-            if (!chartElement) {
-                console.error('Allocation chart element not found');
+            // Verify chart element still exists
+            const element = document.getElementById('allocation-chart');
+            if (!element) {
+                console.error('Allocation chart element disappeared');
                 return;
             }
 
-            // Check if growth view is active
-            const growthView = document.getElementById('growth-view');
-            if (!growthView || !growthView.classList.contains('active')) {
-                console.log('Growth view not active, skipping chart render');
+            // Check if parent container is visible
+            const container = element.closest('.chart-container');
+            if (container && container.offsetHeight === 0) {
+                console.log('Chart container not visible yet, retrying...');
+                setTimeout(tryRender, 100);
                 return;
             }
 
             // Use requestAnimationFrame to ensure DOM is fully updated
             requestAnimationFrame(() => {
                 try {
-                    const ctx = chartElement.getContext('2d');
+                    const ctx = element.getContext('2d');
                     if (!ctx) {
                         console.error('Could not get 2d context from canvas');
                         return;
                     }
+                    
+                    console.log('Canvas context obtained successfully');
+                    console.log('Chart.js version:', Chart.version || 'unknown');
 
                     // Aggregate by type
                     const typeValues = {};
@@ -1348,6 +1360,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         allocationChart = null;
                     }
 
+                    console.log('Creating chart with data:', { labels, data, backgroundColors });
+                    
                     allocationChart = new Chart(ctx, {
                         type: 'doughnut',
                         data: {
@@ -1366,7 +1380,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 legend: {
                                     position: 'bottom',
                                     labels: {
-                                        color: '#FFFFFF',
+                                        color: theme === 'light' ? '#0A0B0D' : '#FFFFFF',
                                         font: {
                                             size: 12
                                         },
@@ -1387,6 +1401,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             }
                         }
                     });
+                    
+                    console.log('Chart created successfully:', allocationChart);
                 } catch (error) {
                     console.error('Error rendering pie chart:', error);
                 }
@@ -1490,10 +1506,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Render pie chart - use a small delay to ensure view is active
-        setTimeout(() => {
-            renderPieChart();
-        }, 100);
+        // Render pie chart immediately - the view should be active by now
+        renderPieChart();
 
         // Update projection
         updateProjection();
