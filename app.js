@@ -1276,19 +1276,28 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Check if Chart.js is loaded - wait up to 2 seconds for it
+        // Check if Chart.js is loaded - wait up to 5 seconds for it (longer for CDN)
         let retries = 0;
-        const maxRetries = 20;
+        const maxRetries = 50; // Increased to 5 seconds
         
         const tryRender = () => {
             // Check if Chart.js is loaded
             if (typeof Chart === 'undefined') {
                 retries++;
                 if (retries < maxRetries) {
+                    // Try loading fallback after 1 second if still not loaded
+                    if (retries === 10 && typeof loadChartJSFallback === 'function') {
+                        loadChartJSFallback();
+                    }
                     setTimeout(tryRender, 100);
                     return;
                 } else {
-                    console.error('Chart.js failed to load after 2 seconds');
+                    console.error('Chart.js failed to load after 5 seconds. Check CDN availability.');
+                    // Show user-friendly error
+                    const container = chartElement.closest('.chart-container');
+                    if (container) {
+                        container.innerHTML = '<p style="color: #8A8FA3; text-align: center; padding: 20px;">Chart failed to load. Please refresh the page.</p>';
+                    }
                     return;
                 }
             }

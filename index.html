@@ -16,8 +16,30 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <!-- Phosphor Icons for lightweight icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <!-- Chart.js for analytics charts -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <!-- Chart.js for analytics charts - with fallback -->
+    <script>
+        // Load Chart.js with fallback
+        (function() {
+            function loadChartJS(src, onError) {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onerror = onError;
+                script.onload = function() {
+                    console.log('Chart.js loaded from:', src);
+                };
+                document.head.appendChild(script);
+            }
+            
+            // Try primary CDN first
+            loadChartJS('https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js', function() {
+                console.warn('Primary Chart.js CDN failed, trying fallback...');
+                // Fallback to unpkg
+                loadChartJS('https://unpkg.com/chart.js@3.9.1/dist/chart.min.js', function() {
+                    console.error('All Chart.js CDNs failed to load');
+                });
+            });
+        })();
+    </script>
 
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
