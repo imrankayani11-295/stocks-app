@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 emailDisplay.style.fontSize = '14px';
                 userProfile.insertBefore(emailDisplay, userProfile.firstChild);
             }
-            emailDisplay.textContent = `Signed in as: ${user.email}`;
+            emailDisplay.textContent = `Signed in as: ${user.email} (ID: ${user.uid.slice(0, 5)})`;
 
             // Test Cloud Button removed as requested
         } else {
