@@ -1270,102 +1270,130 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderPieChart() {
-        // Check if Chart.js is loaded
-        if (typeof Chart === 'undefined') {
-            console.error('Chart.js is not loaded');
-            return;
-        }
-
-        const chartElement = document.getElementById('allocation-chart');
-        if (!chartElement) {
-            console.error('Allocation chart element not found');
-            return;
-        }
-
-        // Use requestAnimationFrame to ensure DOM is updated and view is visible
-        requestAnimationFrame(() => {
-            const ctx = chartElement.getContext('2d');
-
-        // Aggregate by type
-        const typeValues = {};
-        assets.forEach(asset => {
-            const value = asset.amount * (asset.currentPrice || 0);
-            if (value > 0) {
-                typeValues[asset.type] = (typeValues[asset.type] || 0) + value;
-            }
-        });
-
-        // Check if we have data to display
-        const labels = Object.keys(typeValues).map(type =>
-            type.charAt(0).toUpperCase() + type.slice(1)
-        );
-        const data = Object.values(typeValues);
-
-        if (data.length === 0 || data.every(val => val === 0)) {
-            // No data to display, clear chart if exists
-            if (allocationChart) {
-                allocationChart.destroy();
-                allocationChart = null;
-            }
-            return;
-        }
-
-        const colors = {
-            crypto: '#0052FF',
-            stock: '#05B169',
-            property: '#F5B740',
-            cash: '#8A8FA3',
-            gold: '#DF5F67',
-            other: '#1E3A8A'
-        };
-        const backgroundColors = Object.keys(typeValues).map(type => colors[type] || '#8A8FA3');
-
-        // Destroy previous chart if exists
-        if (allocationChart) {
-            allocationChart.destroy();
-            allocationChart = null;
-        }
-
-        allocationChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels,
-                datasets: [{
-                    data,
-                    backgroundColor: backgroundColors,
-                    borderWidth: 2,
-                    borderColor: '#15171A'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            color: '#FFFFFF',
-                            font: {
-                                size: 12
-                            },
-                            padding: 12
-                        }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function (context) {
-                                const label = context.label || '';
-                                const value = formatCurrency(context.parsed);
-                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                const percentage = ((context.parsed / total) * 100).toFixed(1);
-                                return `${label}: ${value} (${percentage}%)`;
-                            }
-                        }
-                    }
+        // Check if Chart.js is loaded - wait up to 2 seconds for it
+        let retries = 0;
+        const maxRetries = 20;
+        
+        const tryRender = () => {
+            if (typeof Chart === 'undefined') {
+                retries++;
+                if (retries < maxRetries) {
+                    setTimeout(tryRender, 100);
+                    return;
+                } else {
+                    console.error('Chart.js failed to load after 2 seconds');
+                    return;
                 }
             }
-        });
-        }); // End requestAnimationFrame
+
+            const chartElement = document.getElementById('allocation-chart');
+            if (!chartElement) {
+                console.error('Allocation chart element not found');
+                return;
+            }
+
+            // Check if growth view is active
+            const growthView = document.getElementById('growth-view');
+            if (!growthView || !growthView.classList.contains('active')) {
+                console.log('Growth view not active, skipping chart render');
+                return;
+            }
+
+            // Use requestAnimationFrame to ensure DOM is fully updated
+            requestAnimationFrame(() => {
+                try {
+                    const ctx = chartElement.getContext('2d');
+                    if (!ctx) {
+                        console.error('Could not get 2d context from canvas');
+                        return;
+                    }
+
+                    // Aggregate by type
+                    const typeValues = {};
+                    assets.forEach(asset => {
+                        const value = asset.amount * (asset.currentPrice || 0);
+                        if (value > 0) {
+                            typeValues[asset.type] = (typeValues[asset.type] || 0) + value;
+                        }
+                    });
+
+                    // Check if we have data to display
+                    const labels = Object.keys(typeValues).map(type =>
+                        type.charAt(0).toUpperCase() + type.slice(1)
+                    );
+                    const data = Object.values(typeValues);
+
+                    if (data.length === 0 || data.every(val => val === 0)) {
+                        // No data to display, clear chart if exists
+                        if (allocationChart) {
+                            allocationChart.destroy();
+                            allocationChart = null;
+                        }
+                        return;
+                    }
+
+                    const colors = {
+                        crypto: '#0052FF',
+                        stock: '#05B169',
+                        property: '#F5B740',
+                        cash: '#8A8FA3',
+                        gold: '#DF5F67',
+                        other: '#1E3A8A'
+                    };
+                    const backgroundColors = Object.keys(typeValues).map(type => colors[type] || '#8A8FA3');
+
+                    // Destroy previous chart if exists
+                    if (allocationChart) {
+                        allocationChart.destroy();
+                        allocationChart = null;
+                    }
+
+                    allocationChart = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels,
+                            datasets: [{
+                                data,
+                                backgroundColor: backgroundColors,
+                                borderWidth: 2,
+                                borderColor: '#15171A'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        color: '#FFFFFF',
+                                        font: {
+                                            size: 12
+                                        },
+                                        padding: 12
+                                    }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function (context) {
+                                            const label = context.label || '';
+                                            const value = formatCurrency(context.parsed);
+                                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                            const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                            return `${label}: ${value} (${percentage}%)`;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error rendering pie chart:', error);
+                }
+            }); // End requestAnimationFrame
+        };
+        
+        tryRender();
     }
 
     function generateAIInsights() {
@@ -1454,11 +1482,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p>Add some assets to see AI-powered growth projections and insights!</p>
             </div>
         `;
+            // Clear chart if no assets
+            if (allocationChart) {
+                allocationChart.destroy();
+                allocationChart = null;
+            }
             return;
         }
 
-        // Render pie chart
-        renderPieChart();
+        // Render pie chart - use a small delay to ensure view is active
+        setTimeout(() => {
+            renderPieChart();
+        }, 100);
 
         // Update projection
         updateProjection();
