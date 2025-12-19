@@ -162,6 +162,15 @@ document.addEventListener('DOMContentLoaded', () => {
             loginBtn.classList.add('hidden');
             userProfile.classList.remove('hidden');
 
+            // Show user avatar if available
+            const avatar = document.getElementById('user-avatar');
+            if (user.photoURL && avatar) {
+                avatar.src = user.photoURL;
+                avatar.style.display = 'block';
+            } else if (avatar) {
+                avatar.style.display = 'none';
+            }
+
             // Show user email
             let emailDisplay = document.getElementById('user-email-display');
             if (!emailDisplay) {
