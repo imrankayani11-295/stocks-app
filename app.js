@@ -564,6 +564,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const amountInput = document.getElementById('asset-amount');
             const bankSelect = document.getElementById('asset-bank');
             const goldWeightInput = document.getElementById('asset-gold-weight');
+            const nameGroup = document.getElementById('asset-manual-name-group');
+            const nameInput = document.getElementById('asset-manual-name');
 
             if (type === 'crypto' || type === 'stock') {
                 populateAssetDropdown(type);
@@ -573,6 +575,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 priceGroup.style.display = 'none';
                 bankGroup.style.display = 'none';
                 goldGroup.style.display = 'none';
+                nameGroup.style.display = 'none';
 
                 // Manage required and disabled attributes
                 symbolSelect.required = true;
@@ -582,6 +585,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 amountInput.required = true;
                 bankSelect.required = false;
                 goldWeightInput.required = false;
+                nameInput.required = false;
             } else if (type === 'property') {
                 selectGroup.style.display = 'none';
                 addressGroup.style.display = 'block';
@@ -589,6 +593,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 priceGroup.style.display = 'block';
                 bankGroup.style.display = 'none';
                 goldGroup.style.display = 'none';
+                nameGroup.style.display = 'none';
 
                 // Manage required and disabled attributes
                 symbolSelect.required = false;
@@ -599,6 +604,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 amountInput.required = false;
                 bankSelect.required = false;
                 goldWeightInput.required = false;
+                nameInput.required = false;
             } else if (type === 'cash') {
                 // Cash: show bank selector and amount
                 selectGroup.style.display = 'none';
@@ -607,6 +613,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 priceGroup.style.display = 'none';
                 bankGroup.style.display = 'block';
                 goldGroup.style.display = 'none';
+                nameGroup.style.display = 'none';
 
                 // Populate banks
                 bankSelect.innerHTML = '<option value="">Select a bank...</option>';
@@ -625,6 +632,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 amountInput.required = true;
                 bankSelect.required = true;
                 goldWeightInput.required = false;
+                nameInput.required = false;
             } else if (type === 'gold') {
                 // Gold: show weight selector
                 selectGroup.style.display = 'none';
@@ -633,6 +641,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 priceGroup.style.display = 'none';
                 bankGroup.style.display = 'none';
                 goldGroup.style.display = 'block';
+                nameGroup.style.display = 'none';
 
                 // Manage required attributes
                 symbolSelect.required = false;
@@ -642,6 +651,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 amountInput.required = false;
                 bankSelect.required = false;
                 goldWeightInput.required = true;
+                nameInput.required = false;
             } else {
                 // For other
                 selectGroup.style.display = 'none';
@@ -650,6 +660,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 priceGroup.style.display = 'block';
                 bankGroup.style.display = 'none';
                 goldGroup.style.display = 'none';
+                nameGroup.style.display = 'block';
 
                 // Manage required and disabled attributes
                 symbolSelect.required = false;
@@ -659,6 +670,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 amountInput.required = true;
                 bankSelect.required = false;
                 goldWeightInput.required = false;
+                nameInput.required = true;
             }
         });
     });
