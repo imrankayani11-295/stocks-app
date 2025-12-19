@@ -776,10 +776,11 @@ header h1 {
 
 .profile-card {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 16px;
     padding: 0;
     margin-bottom: 16px;
+    clear: both;
 }
 
 #user-avatar {
@@ -795,7 +796,8 @@ header h1 {
     font-size: 14px;
     overflow: hidden;
     text-overflow: ellipsis;
-    line-height: 48px;
+    display: flex;
+    align-items: center;
 }
 
 .profile-info {
