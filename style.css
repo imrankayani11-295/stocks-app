@@ -776,6 +776,11 @@ header h1 {
     width: 100%;
 }
 
+#user-avatar {
+    border: 2px solid var(--cb-border);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
 .profile-info {
     display: flex;
     align-items: center;
