@@ -762,7 +762,8 @@ header h1 {
     justify-content: center;
     background: rgba(255, 59, 48, 0.1);
     color: #FF3B30;
-    margin-top: 12px;
+    margin-top: 16px;
+    display: block;
 }
 
 .auth-btn.logout:hover {
