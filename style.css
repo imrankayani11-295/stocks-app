@@ -776,9 +776,28 @@ header h1 {
     width: 100%;
 }
 
+.profile-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: var(--cb-bg-secondary);
+    border-radius: 12px;
+}
+
 #user-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
     border: 2px solid var(--cb-border);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+#user-email-display {
+    color: var(--cb-text-secondary);
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .profile-info {

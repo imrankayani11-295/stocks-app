@@ -166,23 +166,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const avatar = document.getElementById('user-avatar');
             if (user.photoURL && avatar) {
                 avatar.src = user.photoURL;
-                avatar.style.display = 'block';
-            } else if (avatar) {
-                avatar.style.display = 'none';
             }
 
             // Show user email
-            let emailDisplay = document.getElementById('user-email-display');
-            if (!emailDisplay) {
-                emailDisplay = document.createElement('div');
-                emailDisplay.id = 'user-email-display';
-                emailDisplay.style.textAlign = 'center';
-                emailDisplay.style.marginBottom = '10px';
-                emailDisplay.style.color = '#8A8FA3';
-                emailDisplay.style.fontSize = '14px';
-                userProfile.insertBefore(emailDisplay, userProfile.firstChild);
+            const emailDisplay = document.getElementById('user-email-display');
+            if (emailDisplay) {
+                emailDisplay.textContent = user.email;
             }
-            emailDisplay.textContent = 'Signed in as: ' + user.email;
 
             // Test Cloud Button removed as requested
         } else {
