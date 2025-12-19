@@ -595,6 +595,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 symbolSelect.disabled = true;
                 addressInput.required = true;
                 priceInput.required = true;
+                amountInput.value = '1';
                 amountInput.required = false;
                 bankSelect.required = false;
                 goldWeightInput.required = false;
@@ -1583,6 +1584,16 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('edit-asset-name').value = asset.symbol;
         document.getElementById('edit-asset-price').value = asset.currentPrice;
         document.getElementById('edit-asset-amount').value = asset.amount;
+
+        // Hide amount field for property
+        const editAmountGroup = document.getElementById('edit-asset-amount').closest('.form-group');
+        if (asset.type === 'property') {
+            if (editAmountGroup) editAmountGroup.style.display = 'none';
+            document.getElementById('edit-asset-amount').required = false;
+        } else {
+            if (editAmountGroup) editAmountGroup.style.display = 'block';
+            document.getElementById('edit-asset-amount').required = true;
+        }
 
         document.getElementById('edit-modal').classList.remove('hidden');
         document.getElementById('edit-modal').classList.add('visible');
