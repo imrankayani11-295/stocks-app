@@ -846,7 +846,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <div class="asset-values">
                 <span class="value">${formatCurrency(value)}</span>
-                <span class="amount">${asset.amount} × ${formatCurrency(asset.currentPrice || 0)}</span>
+                <span class="amount">${asset.amount} ${asset.symbol} ${asset.type === 'crypto' || asset.type === 'stock' ? '× ' + formatCurrency(asset.currentPrice || 0) : ''}</span>
             </div>
             <button class="delete-btn-desktop" data-index="${originalIndex}" data-symbol="${asset.symbol}">
                 Delete
@@ -1279,7 +1279,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Check if Chart.js is loaded - wait up to 5 seconds for it (longer for CDN)
         let retries = 0;
         const maxRetries = 50; // Increased to 5 seconds
-        
+
         const tryRender = () => {
             // Check if Chart.js is loaded
             if (typeof Chart === 'undefined') {
@@ -1325,7 +1325,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         console.error('Could not get 2d context from canvas');
                         return;
                     }
-                    
+
                     console.log('Canvas context obtained successfully');
                     console.log('Chart.js version:', Chart.version || 'unknown');
 
@@ -1370,7 +1370,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
 
                     console.log('Creating chart with data:', { labels, data, backgroundColors });
-                    
+
                     allocationChart = new Chart(ctx, {
                         type: 'doughnut',
                         data: {
@@ -1410,14 +1410,14 @@ document.addEventListener('DOMContentLoaded', () => {
                             }
                         }
                     });
-                    
+
                     console.log('Chart created successfully:', allocationChart);
                 } catch (error) {
                     console.error('Error rendering pie chart:', error);
                 }
             }); // End requestAnimationFrame
         };
-        
+
         tryRender();
     }
 
