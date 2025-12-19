@@ -26,26 +26,26 @@ const UK_BANKS = [
 
 // Supported Assets with Images
 const SUPPORTED_CRYPTO = [
-    { symbol: 'BTC', name: 'Bitcoin', id: 'bitcoin', image: 'https://assets.coingecko.com/coins/images/1/small/bitcoin.png' },
-    { symbol: 'ETH', name: 'Ethereum', id: 'ethereum', image: 'https://assets.coingecko.com/coins/images/279/small/ethereum.png' },
-    { symbol: 'SOL', name: 'Solana', id: 'solana', image: 'https://assets.coingecko.com/coins/images/4128/small/solana.png' },
-    { symbol: 'USDT', name: 'Tether', id: 'tether', image: 'https://assets.coingecko.com/coins/images/325/small/Tether.png' },
-    { symbol: 'BNB', name: 'Binance Coin', id: 'binancecoin', image: 'https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png' },
-    { symbol: 'XRP', name: 'XRP', id: 'ripple', image: 'https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png' },
-    { symbol: 'USDC', name: 'USDC', id: 'usd-coin', image: 'https://assets.coingecko.com/coins/images/6319/small/usdc.png' },
-    { symbol: 'ADA', name: 'Cardano', id: 'cardano', image: 'https://assets.coingecko.com/coins/images/975/small/cardano.png' },
-    { symbol: 'AVAX', name: 'Avalanche', id: 'avalanche-2', image: 'https://assets.coingecko.com/coins/images/12559/small/Avalanche_Circle_RedWhite_Trans.png' },
-    { symbol: 'DOGE', name: 'Dogecoin', id: 'dogecoin', image: 'https://assets.coingecko.com/coins/images/5/small/dogecoin.png' },
-    { symbol: 'DOT', name: 'Polkadot', id: 'polkadot', image: 'https://assets.coingecko.com/coins/images/12171/small/polkadot.png' },
-    { symbol: 'TRX', name: 'TRON', id: 'tron', image: 'https://assets.coingecko.com/coins/images/1094/small/tron-logo.png' },
-    { symbol: 'LINK', name: 'Chainlink', id: 'chainlink', image: 'https://assets.coingecko.com/coins/images/877/small/chainlink-new-logo.png' },
-    { symbol: 'MATIC', name: 'Polygon', id: 'matic-network', image: 'https://assets.coingecko.com/coins/images/4713/small/matic-token-icon.png' },
-    { symbol: 'SHIB', name: 'Shiba Inu', id: 'shiba-inu', image: 'https://assets.coingecko.com/coins/images/11939/small/shiba.png' },
-    { symbol: 'LTC', name: 'Litecoin', id: 'litecoin', image: 'https://assets.coingecko.com/coins/images/2/small/litecoin.png' },
-    { symbol: 'DAI', name: 'Dai', id: 'dai', image: 'https://assets.coingecko.com/coins/images/9956/small/4943.png' },
-    { symbol: 'BCH', name: 'Bitcoin Cash', id: 'bitcoin-cash', image: 'https://assets.coingecko.com/coins/images/780/small/bitcoin-cash-circle.png' },
-    { symbol: 'UNI', name: 'Uniswap', id: 'uniswap', image: 'https://assets.coingecko.com/coins/images/12504/small/uniswap-uni.png' },
-    { symbol: 'ATOM', name: 'Cosmos', id: 'cosmos', image: 'https://assets.coingecko.com/coins/images/1481/small/cosmos_hub.png' }
+    { symbol: 'BTC', name: 'Bitcoin', id: 'bitcoin', image: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/btc.svg' },
+    { symbol: 'ETH', name: 'Ethereum', id: 'ethereum', image: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/eth.svg' },
+    { symbol: 'SOL', name: 'Solana', id: 'solana', image: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/sol.svg' },
+    { symbol: 'USDT', name: 'Tether', id: 'tether', image: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/usdt.svg' },
+    { symbol: 'BNB', name: 'Binance Coin', id: 'binancecoin', image: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/bnb.svg' },
+    { symbol: 'XRP', name: 'XRP', id: 'ripple', image: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/xrp.svg' },
+    { symbol: 'USDC', name: 'USDC', id: 'usd-coin', image: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/usdc.svg' },
+    { symbol: 'ADA', name: 'Cardano', id: 'cardano', image: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/ada.svg' },
+    { symbol: 'AVAX', name: 'Avalanche', id: 'avalanche-2', image: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/avax.svg' },
+    { symbol: 'DOGE', name: 'Dogecoin', id: 'dogecoin', image: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/doge.svg' },
+    { symbol: 'DOT', name: 'Polkadot', id: 'polkadot', image: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/dot.svg' },
+    { symbol: 'TRX', name: 'TRON', id: 'tron', image: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/trx.svg' },
+    { symbol: 'LINK', name: 'Chainlink', id: 'chainlink', image: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/link.svg' },
+    { symbol: 'MATIC', name: 'Polygon', id: 'matic-network', image: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/matic.svg' },
+    { symbol: 'SHIB', name: 'Shiba Inu', id: 'shiba-inu', image: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/shib.svg' },
+    { symbol: 'LTC', name: 'Litecoin', id: 'litecoin', image: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/ltc.svg' },
+    { symbol: 'DAI', name: 'Dai', id: 'dai', image: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/dai.svg' },
+    { symbol: 'BCH', name: 'Bitcoin Cash', id: 'bitcoin-cash', image: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/bch.svg' },
+    { symbol: 'UNI', name: 'Uniswap', id: 'uniswap', image: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/uni.svg' },
+    { symbol: 'ATOM', name: 'Cosmos', id: 'cosmos', image: 'https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/atom.svg' }
 ];
 
 // Using Clearbit for stock logos (fallback to text if fails)
@@ -771,7 +771,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (asset.type === 'crypto') {
                 const cryptoInfo = SUPPORTED_CRYPTO.find(c => c.symbol === asset.symbol);
                 iconHTML = cryptoInfo?.image
-                    ? `<img src="${cryptoInfo.image}" alt="${asset.symbol}" onerror="this.parentElement.innerHTML='${asset.symbol.charAt(0)}'">`
+                    ? `<img src="${cryptoInfo.image}" alt="${asset.symbol}" class="asset-icon-img crypto-icon" onerror="this.parentElement.innerHTML='${asset.symbol.charAt(0)}'">`
                     : asset.symbol.charAt(0);
             } else if (asset.type === 'stock') {
                 const stockInfo = SUPPORTED_STOCKS.find(s => s.symbol === asset.symbol);

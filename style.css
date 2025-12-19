@@ -254,8 +254,8 @@ body {
 }
 
 .asset-icon {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     background: var(--cb-bg-secondary);
     display: flex;
@@ -266,10 +266,16 @@ body {
     border: 1px solid var(--cb-border);
 }
 
-.asset-icon img {
+.asset-icon img,
+.asset-icon-img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    display: block;
+}
+
+.crypto-icon {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 .asset-icon.placeholder {
