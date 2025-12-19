@@ -833,10 +833,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Click handler to edit asset
             item.addEventListener('click', (e) => {
-                // Don't open edit if clicking delete button
-                if (e.target.closest('.delete-btn-desktop')) {
-                    return;
-                }
                 openEditModal(originalIndex);
             });
 
@@ -861,9 +857,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="value">${formatCurrency(value)}</span>
                 <span class="amount">${asset.type === 'property' ? '' : asset.amount + ' ' + asset.symbol + ' ' + (asset.type === 'crypto' || asset.type === 'stock' ? '× ' + formatCurrency(asset.currentPrice || 0) : '')}</span>
             </div>
-            <button class="delete-btn-desktop" data-index="${originalIndex}" data-symbol="${asset.symbol}">
-                Delete
-            </button>
         `;
 
             // Swipe Logic
@@ -903,16 +896,6 @@ document.addEventListener('DOMContentLoaded', () => {
             // Don't add a click handler to reset swipe - it conflicts with delete button
 
             // Attach delete button handler (no confirmation)
-            const deleteBtn = item.querySelector('.delete-btn-desktop');
-            if (deleteBtn) {
-                deleteBtn.addEventListener('click', (e) => {
-                    e.stopImmediatePropagation();
-                    e.preventDefault();
-                    const idx = parseInt(deleteBtn.dataset.index);
-                    deleteAsset(idx);
-                }, true);
-            }
-
             wrapper.appendChild(item);
             assetsContainer.appendChild(wrapper);
         });

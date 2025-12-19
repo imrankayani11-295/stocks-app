@@ -227,40 +227,6 @@ body {
     z-index: 1;
 }
 
-/* Hover Delete (Desktop) */
-.asset-item:hover .delete-btn-desktop {
-    opacity: 1;
-}
-
-.delete-btn-desktop {
-    position: absolute;
-    right: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: transparent;
-    color: var(--cb-text-secondary);
-    border: none;
-    padding: 6px 12px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    opacity: 0;
-    pointer-events: auto;
-    transition: all 0.2s;
-    z-index: 10;
-    font-size: 13px;
-    font-weight: 500;
-    white-space: nowrap;
-}
-
-.delete-btn-desktop:hover {
-    background: var(--cb-bg-secondary);
-    color: var(--cb-danger);
-    opacity: 1;
-}
-
 .asset-item {
     background: var(--cb-bg);
     padding: 20px;
