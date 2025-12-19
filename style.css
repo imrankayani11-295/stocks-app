@@ -780,9 +780,8 @@ header h1 {
     display: flex;
     align-items: center;
     gap: 16px;
-    padding: 16px;
-    background: var(--cb-bg-secondary);
-    border-radius: 12px;
+    padding: 0;
+    margin-bottom: 16px;
 }
 
 #user-avatar {
