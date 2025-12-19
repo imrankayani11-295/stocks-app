@@ -847,7 +847,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <div class="asset-values">
                 <span class="value">${formatCurrency(value)}</span>
-                <span class="amount">${asset.amount} ${asset.symbol} ${asset.type === 'crypto' || asset.type === 'stock' ? '× ' + formatCurrency(asset.currentPrice || 0) : ''}</span>
+                <span class="amount">${asset.type === 'property' ? '' : asset.amount + ' ' + asset.symbol + ' ' + (asset.type === 'crypto' || asset.type === 'stock' ? '× ' + formatCurrency(asset.currentPrice || 0) : '')}</span>
             </div>
             <button class="delete-btn-desktop" data-index="${originalIndex}" data-symbol="${asset.symbol}">
                 Delete
