@@ -770,9 +770,6 @@ header h1 {
 }
 
 #user-profile {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
     width: 100%;
 }
 
