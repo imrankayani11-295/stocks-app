@@ -989,12 +989,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Fetch Gold Price
         if (goldAssets.length > 0) {
             try {
-                // 1. Fetch Gold Price (USD per oz) from FreeGoldAPI
-                const goldResponse = await fetch('https://freegoldapi.com/api/live');
+                // 1. Fetch Gold Price (using PAXG as proxy) from Coinbase
+                const goldResponse = await fetch(`${COINBASE_API}/PAXG-USD/spot`);
                 const goldData = await goldResponse.json();
 
-                if (goldData && goldData.price) {
-                    let pricePerOzUSD = goldData.price;
+                if (goldData && goldData.data && goldData.data.amount) {
+                    let pricePerOzUSD = parseFloat(goldData.data.amount);
                     let pricePerGram = 0;
 
                     // 2. Handle Currency Conversion
