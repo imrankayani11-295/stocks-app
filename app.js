@@ -927,7 +927,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update Prices
     async function updatePrices() {
         const cryptoAssets = assets.filter(a => a.type === 'crypto');
+        const goldAssets = assets.filter(a => a.type === 'gold');
 
+        // Fetch Crypto Prices
         if (cryptoAssets.length > 0) {
             try {
                 // Fetch each crypto price from Coinbase
@@ -981,6 +983,58 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             } catch (error) {
                 console.error('Error fetching crypto prices:', error);
+            }
+        }
+
+        // Fetch Gold Price
+        if (goldAssets.length > 0) {
+            try {
+                // 1. Fetch Gold Price (USD per oz) from FreeGoldAPI
+                const goldResponse = await fetch('https://freegoldapi.com/api/live');
+                const goldData = await goldResponse.json();
+
+                if (goldData && goldData.price) {
+                    let pricePerOzUSD = goldData.price;
+                    let pricePerGram = 0;
+
+                    // 2. Handle Currency Conversion
+                    if (currency === 'GBP') {
+                        // Fetch USD -> GBP rate from Coinbase
+                        const rateResponse = await fetch('https://api.coinbase.com/v2/exchange-rates?currency=USD');
+                        const rateData = await rateResponse.json();
+                        const rate = rateData.data.rates.GBP;
+                        pricePerOzUSD = pricePerOzUSD * rate;
+                    }
+
+                    // 3. Convert oz to grams (1 troy oz = 31.1034768 g)
+                    pricePerGram = pricePerOzUSD / 31.1034768;
+
+                    // Update Gold Assets
+                    assets = assets.map(asset => {
+                        if (asset.type === 'gold') {
+                            let sparkline = asset.sparkline || [];
+                            if (sparkline.length === 0) {
+                                let last = pricePerGram;
+                                for (let i = 0; i < 20; i++) {
+                                    last = last * (1 + (Math.random() * 0.04 - 0.02));
+                                    sparkline.push(last);
+                                }
+                            } else {
+                                sparkline.shift();
+                                sparkline.push(pricePerGram);
+                            }
+
+                            return {
+                                ...asset,
+                                currentPrice: pricePerGram,
+                                sparkline: sparkline
+                            };
+                        }
+                        return asset;
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching gold price:', error);
             }
         }
 
